@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Mockery\Mock;
 use Tests\Fakes\Fakemodel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 abstract class BaseServivesTest extends TestCase {
     protected $service;
     protected MockInterface $repositoryMock;
@@ -66,6 +67,19 @@ abstract class BaseServivesTest extends TestCase {
         $this->assertEquals(false, $result);
     }
 
+    public function test_luu_ban_ghi_that_bai_khi_du_lieu_rong(){
+        $request = new Request([]);
+        $this->repositoryMock->shouldReceive('getFillable')->andReturn(['name']);
+        DB::shouldReceive('beginTransaction')->never();
+        DB::shouldReceive('commit')->never();
+        DB::shouldReceive('rollBack')->never();
+        $result = $this->service->save($request);
+        $this->assertFalse($result, "Khi dữ liệu rỗng, thì phương thức save trả về false");
+    }
+
+    //Testcase luu du lieu thanh cong voi quan he
+    //Testcase luu du lieu khong thanh cong voi quan he
+
     public function test_cap_nhat_ban_ghi_thanh_cong() {
         $id = 1;
         $requestData = $this->getDefaultRequestsData(['name' => 'Updated name']);
@@ -80,6 +94,23 @@ abstract class BaseServivesTest extends TestCase {
         $this->assertEquals(1, $result->id);
     }   
 
+    public function test_hien_thi_du_lieu_theo_id_voi_quan_he_thanh_cong() {
+        $id = 1;
+        $mockModel = new Fakemodel(['id' => 1, 'name' => 'Test', 'users' => [], 'creators' => []]);
+        $this->repositoryMock->shouldReceive('findById')->andReturn($mockModel);
+        $result = $this->service->show($id);
+        $this->assertEquals($id, $result->id);
+        $this->assertIsArray($result->users);
+        $this->assertIsArray($result->creators);
+    }
+
+    public function test_that_bai_khi_id_khong_ton_tai() {
+        $this->repositoryMock->shouldReceive('findById')->andThrow(new ModelNotFoundException());
+        $this->expectException(ModelNotFoundException::class);
+        $this->service->findById(999);
+    }
+
     protected abstract function getDefaultRequestsData(array $overrides = []);
     protected abstract function prepareExpectedData(array $requestData = []);
+    protected abstract function getWith(): array;
 }

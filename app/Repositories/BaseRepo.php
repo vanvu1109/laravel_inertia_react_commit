@@ -28,7 +28,7 @@ class BaseRepo {
     }
 
 
-    public function findById(int $id, array $with = [], array $columns = ['*']): Model{
+    public function findById(int $id, array $with = [], ?array $columns = ['*']): Model{
         return $this->model->select($columns)->with($with)->findOrFail($id);
     }
 

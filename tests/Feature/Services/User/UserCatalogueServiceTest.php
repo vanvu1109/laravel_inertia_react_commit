@@ -35,5 +35,7 @@ class UserCatalogueServiceTest extends BaseServivesTest {
         ]);
     }
 
-
+    protected function getWith(): array {
+        return ['users', 'creators'];
+    }
 }

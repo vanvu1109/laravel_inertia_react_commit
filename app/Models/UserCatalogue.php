@@ -21,7 +21,8 @@ class UserCatalogue extends Model {
     
 
     protected $relationable = [
-        'users'
+        'users',
+        'creators',
     ];
 
     public function getRelationable()
