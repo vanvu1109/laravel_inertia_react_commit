@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Requests\User\UserCatalogue;
+namespace App\Http\Requests\Permission\Permission;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
-class StoreRequest extends FormRequest
+class BulkDestroyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,18 +22,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'description' => 'sometimes|string',
-            'canonical' => 'required|string|unique:user_catalogues',
+           'ids' => 'required|array|min:1',
+           'ids.*' => 'exists:permissions,id',
         ];
-    }
-
-    public function attributes() {
-       return [
-            'name' => Lang::get('message.validation.name'),
-            'description' => Lang::get('message.description'),
-            'canonical' => Lang::get('message.validation.canonical'),
-       ];
     }
 
 }

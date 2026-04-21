@@ -23,7 +23,7 @@ class BaseRepo {
     public function update(int $id, array $payload = []): Model{
         $model = $this->findById($id);
         $model->fill($payload);
-        $model->save($payload);
+        $model->save();
         return $model;
     }
 

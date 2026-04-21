@@ -34,7 +34,7 @@ const defaultActions :TBulkAction[] = [
           preserveScroll: true,
           preserveState: true
         });
-        await sleep(3000)
+        // await sleep(3000)
       }    
     }
   },

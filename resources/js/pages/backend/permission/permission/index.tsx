@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
+import  { dashboard }  from '@/routes';
 import type { BreadcrumbItem, User } from '@/types';
 import type { PageConfig } from '@/types';
 import CustomPageHeading from '@/components/custom-page-heading';
@@ -12,7 +12,7 @@ import CusTomFilter from '@/components/custom-filter';
 import { filter } from '@/constants/filter';
 import CustomTable from '@/components/custom-table';
 import type { IPaginate } from '@/types';
-import type { Product } from './save';
+import type { Permission } from './save';
 // import { useEffect } from 'react';
 import React, { } from 'react';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -30,21 +30,22 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard(),
     },
     {
-        title: 'QL ',
-        href: '/backend/product',
+        title: 'Quản lý quyền thành viên ',
+        href: '/backend/permission',
     },
 ];
 
-const pageConfig: PageConfig<Product> = {
-    heading: 'Quản Lý ...',
-    module: '/backend/product',
-    cardHeading: 'Bảng Quản Lý Danh Sách ',
-    cardDescription: 'Quản lý thông tin danh sách nhóm ..., sử dụng các chức năng để lọc dữ liệu... ',
+const pageConfig: PageConfig<Permission> = {
+    heading: 'Quản Lý Quyền',
+    module: '/backend/permission',
+    cardHeading: 'Bảng Quản Lý Danh Sách Quyền ',
+    cardDescription: 'Quản lý thông tin danh sách quyền, sử dụng các chức năng để lọc dữ liệu... ',
     filters: [...filter],
     columns : [
         {key: 'checkbox', label: '', className: 'w-[60px]'},
         {key: 'id', label: 'ID', className: 'w-[100px]'},
         {key: 'name', label: 'Tên nhóm', className: 'w-[15%]'},
+        {key: 'canonical', label: 'Từ khoá', className: 'w-[15%]'},
         {key: 'description', label: 'Mô tả', className: 'w-[25%]'},
         {key: 'creators', label: 'Người tạo', className: 'w-[15%]'},
         {key: 'created_at', label: 'Ngày tạo', className: 'text-center'},
@@ -64,15 +65,16 @@ const TableRowComponent = React.memo(({
     onCheckItem,
     checked
 }: {
-    item: Product,
+    item: Permission,
     switches: SwitchState<SwitchField>,
     onSwitchChange: (id: number, field: SwitchField, curentValue: string) => () => void,
     onCheckItem: (id: number, checked: boolean) => void,
     checked: boolean
 }) => {
     const effectivePublish = switches[item.id]?.values.publish ?? item.publish
+    
     const loading = switches[item.id]?.loading ?? false
-
+    
     return (
         <TableRow key={item.id} className={`cursor-pointer ${checked ? 'bg-[#ffc]' : ''}`}>
         <TableCell className='font-medium'>
@@ -85,6 +87,7 @@ const TableRowComponent = React.memo(({
         </TableCell>
         <TableCell>{item.id}</TableCell>
         <TableCell>{item.name}</TableCell>
+        <TableCell>{item.canonical}</TableCell>
         <TableCell>{item.description}</TableCell>
         <TableCell>{item.creators.name}</TableCell>
         <TableCell>{item.created_at}</TableCell>
@@ -120,12 +123,12 @@ const TableRowComponent = React.memo(({
 }
 )
 
-interface IProductIndexProps {
+interface IPermissionIndexProps {
     users : User[],
-    records: IPaginate<Product>
+    records: IPaginate<Permission>
 }
 
-export default function ProductIndex({users, records}: IProductIndexProps) {
+export default function PermissionIndex({users, records}: IPermissionIndexProps) {
 
     const {
         switches, 
@@ -135,7 +138,7 @@ export default function ProductIndex({users, records}: IProductIndexProps) {
         handelCheckItem,
         selectedIds,
         setSelectedIds
-    } = useTable<Product>({pageConfig, rerords: records.data})
+    } = useTable<Permission>({pageConfig, rerords: records.data})
     const { filters } = useFilter({users, pageConfig})
 
     return (
@@ -196,7 +199,7 @@ export default function ProductIndex({users, records}: IProductIndexProps) {
                                 },
                                 ...pageConfig.columns?.filter(col => col.key !== 'checkbox') ?? []
                             ]}
-                            render={(item: Product) => (
+                            render={(item: Permission) => (
                                 <TableRowComponent 
                                     key={item.id}
                                     item={item}

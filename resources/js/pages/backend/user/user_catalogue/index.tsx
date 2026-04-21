@@ -30,7 +30,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard(),
     },
     {
-        title: 'QL Nhóm Thành Viên ',
+        title: 'Quản lý nhóm thành viên',
         href: '/backend/user_catalogue',
     },
 ];
@@ -39,7 +39,7 @@ const pageConfig: PageConfig<UserCatalogue> = {
     heading: 'Quản Lý Nhóm Thành Viên',
     module: '/backend/user_catalogue',
     cardHeading: 'Bảng Quản Lý Danh Sách Nhóm Thành Viên',
-    cardDescription: 'Quản lý thông tin danh sách nhóm thành viên, sử dụng các chức năng để lọc dữ liệu... ',
+    cardDescription: 'Quản lý thông tin danh sách các nhóm thành viên, sử dụng các chức năng để lọc dữ liệu... ',
     filters: [...filter],
     columns : [
         {key: 'checkbox', label: '', className: 'w-[60px]'},
@@ -53,10 +53,6 @@ const pageConfig: PageConfig<UserCatalogue> = {
         {key: 'action', label: 'Thao tác', className: 'w-[120px] text-center'},
     ],
     switches: ['publish'] as const
-}
-interface IUserCatalogueIndexProps {
-    users : User[],
-    records: IPaginate<UserCatalogue>
 }
 
 type SwitchField = NonNullable<typeof pageConfig.switches>[number]
@@ -123,6 +119,11 @@ const TableRowComponent = React.memo(({
     )
 }
 )
+
+interface IUserCatalogueIndexProps {
+    users : User[],
+    records: IPaginate<UserCatalogue>
+}
 
 export default function UserCatalogueIndex({users, records}: IUserCatalogueIndexProps) {
 

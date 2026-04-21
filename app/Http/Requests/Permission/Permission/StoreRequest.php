@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests\User\UserCatalogue;
+namespace App\Http\Requests\Permission\Permission;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Lang;
@@ -23,17 +23,18 @@ class StoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'canonical' => 'required|string|unique:permissions',
             'description' => 'sometimes|string',
-            'canonical' => 'required|string|unique:user_catalogues',
         ];
     }
 
     public function attributes() {
        return [
             'name' => Lang::get('message.validation.name'),
-            'description' => Lang::get('message.description'),
             'canonical' => Lang::get('message.validation.canonical'),
+            'description' => Lang::get('message.description'),
        ];
     }
+
 
 }

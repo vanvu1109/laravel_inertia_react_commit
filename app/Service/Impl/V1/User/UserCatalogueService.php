@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UserCatalogueService extends BaseService implements UserCatalogueServiceInterface{
 
     protected $repository;
-    protected $with = ['creators', 'users'];
+    protected $with = ['creators', 'users', 'permissions'];
 
     // protected $perpage = '';
     protected $simpleFilter = ['publish'];
@@ -25,9 +25,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
     protected function prepareModelData() : static{
         $fillable = $this->repository->getFillable();
         $this->modelData = $this->request->only($fillable);
-        if(isset($this->modelData['canonical'])){
-            $this->modelData['canonical'] = Str::slug($this->modelData['canonical']);
-        }
         $this->modelData['user_id'] = Auth::user()->id;
         return $this;
     }

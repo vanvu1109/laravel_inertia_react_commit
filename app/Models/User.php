@@ -1,53 +1,55 @@
 <?php
-
 namespace App\Models;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Hasquery;
-class User extends Authenticatable
-{
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, Hasquery;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+class User extends Authenticatable {
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+   use SoftDeletes, HasFactory, Notifiable, TwoFactorAuthenticatable, Hasquery;
+
     protected $fillable = [
         'name',
         'email',
         'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
         'two_factor_secret',
         'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
+        'remember_token',
+        'deleted_at',
+        'publish',
+    ];
+    
+    protected $hidden = [
+        'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $relationable = [
+        'user_catalogues',
+    ];
+
+    public function getRelationable()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'two_factor_confirmed_at' => 'datetime',
-        ];
+        return $this->relationable;
     }
-}
+
+
+    public function creators(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function user_catalogues(): BelongsToMany {
+        return $this->belongsToMany(UserCatalogue::class, 'user_catalogue_user');
+    }
+
+    public $casts = [
+        'created_at' => 'datetime:d-m-Y H:i:s',
+        'updated_at' => 'datetime:d-m-Y H:i:s',
+    ];
+}   
+

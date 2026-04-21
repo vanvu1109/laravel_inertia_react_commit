@@ -35,6 +35,10 @@ const mainNavItems: NavItem[] = [
                 title: 'Thành viên',
                 url: '/backend/user',
             },
+            {
+                title: 'Quản lý quyền',
+                url: '/backend/permission',
+            },
         ]
     },
 ];

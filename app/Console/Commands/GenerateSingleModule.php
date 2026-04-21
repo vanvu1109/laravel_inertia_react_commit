@@ -11,12 +11,13 @@ class GenerateSingleModule extends Command
     protected $namespace;
     protected $version;
     protected $table;
+    protected $moduleName;
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'make:crud {module} {--namespace=: The namespace of the module} {--v=: The version of the module} {--table=: The table of the module}';
+    protected $signature = 'make:crud {module} {--namespace=: The namespace of the module} {--v=: The version of the module} {--table=: The table of the module} {--moduleName=: The name of the module}';
 
     /**
      * The console command description.
@@ -49,6 +50,11 @@ class GenerateSingleModule extends Command
         return $this;
     }
     
+    protected function setModuleName(string $moduleName = ''): static{
+        $this->moduleName = $moduleName;
+        return $this;
+    }
+
     public function handle()
     {
         try{
@@ -56,16 +62,18 @@ class GenerateSingleModule extends Command
             ->setNamespace($this->option('namespace'))
             ->setVersion($this->option('v'))
             ->setTable($this->option('table'))
-            // ->generateController()
-            // ->generateService()
-            // ->generateRepository()
-            // ->generateModel()
-            // ->generateRequest()
-            // ->generateServiceiInterface()
-            ->generateView();
+            ->setModuleName($this->option('moduleName'))
+            ->generateController()
+            ->generateService()
+            ->generateRepository()
+            ->generateModel()
+            ->generateRequest()
+            ->generateServiceiInterface()
+            ->generateView()
+            ->generateMigration()
+            ->generatePermissionData();
 
-
-
+            
         }catch(\Throwable $th){
             $this->error("Có lỗi xảy ra: " .$th->getMessage());
             return Command::FAILURE;

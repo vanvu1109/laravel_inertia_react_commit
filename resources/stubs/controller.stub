@@ -11,9 +11,12 @@ use App\Service\Interfaces\User\UserServiceInterface as UserService;
 use Illuminate\Support\Facades\Lang;
 use App\Http\Requests\{{namespace}}\{{module}}\BulkDestroyRequest;
 use App\Http\Requests\{{namespace}}\{{module}}\BulkUpdateRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class {{module}}Controller extends BaseController
 {
+    use AuthorizesRequests;
+
     protected $userCatalogueService;
     protected $userService;
 
@@ -28,6 +31,7 @@ class {{module}}Controller extends BaseController
     }
     
     public function index(Request $request){
+        $this->authorize('module', 'user_catalogue:index');
         $records = $this->service->paginate($request);
         $users = $this->userService->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
         return Inertia::render('backend/{{snake_namespace}}/{{snake_module}}/index',[
@@ -38,10 +42,12 @@ class {{module}}Controller extends BaseController
     }
 
     public function create(){
+        $this->authorize('module', 'user_catalogue:store');
         return Inertia::render('backend/{{snake_namespace}}/{{snake_module}}/save');
     }
 
     public function edit($id){
+        $this->authorize('module', 'user_catalogue:update');
         $record = $this->service->show($id);
         return Inertia::render('backend/{{snake_namespace}}/{{snake_module}}/save',[
             'record' => $record
@@ -50,21 +56,25 @@ class {{module}}Controller extends BaseController
 
 
     public function store(StoreRequest $request):RedirectResponse{
+        $this->authorize('module', 'user_catalogue:store');
         $response = $this->service->save($request);
         return $this->handleAction($response, $request, redirectRoute: '{{snake_module}}.index');
     }
 
     public function update(UpdateRequest $request, $id):RedirectResponse{
+        $this->authorize('module', 'user_catalogue:update');
         $response = $this->service->save($request, $id);
         return $this->handleAction($response, $request, redirectRoute: '{{snake_module}}.index', editRoute: '{{snake_module}}.edit');
     }
 
     public function destroy($id){
+        $this->authorize('module', 'user_catalogue:delete');
         $response = $this->service->destroy($id);
         return to_route('{{snake_module}}.index')->with('success', Lang::get('message.delete_success'));
     }
 
     public function bulkDestroy(BulkDestroyRequest $request){
+        $this->authorize('module', 'user_catalogue:bulkDestroy');
         $response = $this->service->bulkDestroy($request);
         return $response 
             ? redirect()->back()->with('success', Lang::get('message.delete_success')) 
@@ -72,6 +82,7 @@ class {{module}}Controller extends BaseController
     }
 
     public function bulkUpdate(BulkUpdateRequest $request){
+        $this->authorize('module', 'user_catalogue:bulkUpdate');
         $response = $this->service->bulkUpdate($request);
         return $response 
             ? redirect()->back()->with('success', Lang::get('message.save_success')) 

@@ -1,14 +1,14 @@
 <?php
-namespace App\Service\Impl\V1\User;
+namespace App\Service\Impl\V1\Permission;
 use App\Service\Impl\BaseService;
-use App\Service\Interfaces\User\UserServiceInterface;
-use App\Repositories\User\UserRepo;
+use App\Service\Interfaces\Permission\PermissionServiceInterface;
+use App\Repositories\Permission\PermissionRepo;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-class UserService extends BaseService implements UserServiceInterface{
+class PermissionService extends BaseService implements PermissionServiceInterface{
 
     protected $repository;
-    protected $with = ['user_catalogues'];
+    protected $with = ['user_catalogues', 'creators'];
 
     // protected $perpage = '';
     protected $simpleFilter = ['publish'];
@@ -17,7 +17,7 @@ class UserService extends BaseService implements UserServiceInterface{
     protected $complexFilter = ['id'];
 
 
-    public function __construct(UserRepo $repository) {
+    public function __construct(PermissionRepo $repository) {
         $this->repository = $repository;
         parent::__construct($repository);
     }

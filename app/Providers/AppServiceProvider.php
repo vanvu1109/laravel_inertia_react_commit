@@ -12,7 +12,8 @@ use App\Service\Impl\V1\User\UserCatalogueService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Service\Impl\V1\User\UserService;
 use App\Service\Interfaces\User\UserServiceInterface;
-
+use App\Service\Interfaces\Permission\PermissionServiceInterface;
+use App\Service\Impl\V1\Permission\PermissionService;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -34,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(UserCatalogueServiceInterface::class, UserCatalogueService::class);
         $this->app->bind(UserServiceInterface::class, UserService::class);
+        $this->app->bind(PermissionServiceInterface::class, PermissionService::class);
     }
 
     /**

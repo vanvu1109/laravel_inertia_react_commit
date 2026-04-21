@@ -1,10 +1,8 @@
 <?php
-namespace App\Http\Requests\{{namespace}}\{{module}};
+namespace App\Http\Requests\User\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
-class StoreRequest extends FormRequest
+class BulkUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +20,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'description' => 'sometimes|string',
-        ];
-    }
+           'ids' => 'required|array|min:1',
+           'ids.*' => 'exists:users,id',
+           'publish' => 'sometimes|in:1,2',
 
-    public function attributes() {
-       return [
-            'name' => Lang::get('message.validation.name'),
-            'description' => Lang::get('message.description'),
-       ];
+        ];
     }
 
 }

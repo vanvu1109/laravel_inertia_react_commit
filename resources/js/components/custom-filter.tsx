@@ -25,7 +25,7 @@ const CusTomFilter = ({filters}: ICusTomFilterProps) => {
     return (
         <Form
             method="get"
-            action={user_catalogue.index()}
+            action=""
             options={{
                 preserveScroll: true,
                 // preserveState: true

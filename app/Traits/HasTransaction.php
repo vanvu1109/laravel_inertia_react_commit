@@ -1,5 +1,7 @@
 <?php
 namespace App\Traits;
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 trait HasTransaction
 {
@@ -50,14 +52,16 @@ trait HasTransaction
     }
 
 
-    public function withRelation(): static{
-        $relationable = $this->repository->getRelationable() ?? [];
-        if(count($relationable)){
-           foreach($relationable as $relation){
-               if($this->request->has($relation)){
-                   $this->model->$relation()->sync($this->request->get($relation));
-               }
-           }
+    protected function withRelation():static{
+        $relationable = $this->repository->getRelationable() ??  [];        
+        foreach ($relationable as $relation) {
+            if($relation === 'users'){
+                $this->model->$relation()->sync([Auth::id()]);
+            }
+
+            if($this->request->has($relation)){
+                $this->model->$relation()->sync($this->request->get($relation));
+            }
         }
         return $this;
     }

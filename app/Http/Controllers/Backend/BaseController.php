@@ -39,8 +39,8 @@ class BaseController extends Controller {
         $request->merge([
             $request->input('field') => $request->input('value')
         ]);
-       
         $response = $this->service->save($request, $id);
+        // dd($response);
         return redirect()->back()->with('success', Lang::get('message.save_success'));
     }
 }

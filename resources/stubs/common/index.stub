@@ -36,10 +36,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const pageConfig: PageConfig<{{module}}> = {
-    heading: 'Quản Lý ...',
+    heading: 'Quản Lý {{module_name}}',
     module: '/backend/{{snake_module}}',
     cardHeading: 'Bảng Quản Lý Danh Sách ',
-    cardDescription: 'Quản lý thông tin danh sách nhóm ..., sử dụng các chức năng để lọc dữ liệu... ',
+    cardDescription: 'Quản lý thông tin danh sách các {{module_name}}, sử dụng các chức năng để lọc dữ liệu... ',
     filters: [...filter],
     columns : [
         {key: 'checkbox', label: '', className: 'w-[60px]'},

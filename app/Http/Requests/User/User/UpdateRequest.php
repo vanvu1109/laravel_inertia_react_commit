@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Requests\User\UserCatalogue;
+namespace App\Http\Requests\User\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Lang;
@@ -19,7 +19,7 @@ class UpdateRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
-     //Rule::unique('user_catalogues')->ignore($this->route('snake_module')),
+     //Rule::unique('users')->ignore($this->route('snake_module')),
      */
     public function rules(): array
     {
@@ -31,9 +31,8 @@ class UpdateRequest extends FormRequest
             'canonical' => [
                 $sometimes,
                 'required',
-                'unique:user_catalogues',
+                'unique:users',
                 'string',
-                Rule::unique('user_catalogues')->ignore($this->route('user_catalogue')),
             ],
             'description' => 'sometimes|string',
             'publish' => 'sometimes|in:1,2',
@@ -47,4 +46,6 @@ class UpdateRequest extends FormRequest
             'description' => Lang::get('message.description'),
        ];
     }
+     
+    
 }

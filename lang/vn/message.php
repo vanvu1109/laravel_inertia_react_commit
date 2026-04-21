@@ -1,8 +1,9 @@
 <?php
 return [
-    'user_catalogue' => [
+    'validation' => [
         'name' => 'Tên nhóm thành viên',
         'canonical' => 'Từ khoá',
+        'publish' => 'Trạng thái',
     ],
         'description' => 'Mô tả ngắn',
         'save_failed' => 'Cập nhật bản ghi không thành công',

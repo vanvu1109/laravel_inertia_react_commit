@@ -18,6 +18,7 @@ interface ICustomCardProps {
     isShowFooter?: boolean
     children: React.ReactNode
     footerChildren?: JSX.Element
+    className?: string
 }
 
 
@@ -29,17 +30,18 @@ const CustomCard = ({
     isShowHeader,
     isShowFooter,
     children,
-    footerChildren
+    footerChildren,
+    className
 }: ICustomCardProps) => {
   return (
-    <Card className="relative rounded-[5px] gap-4 pt-[20px]">
+    <Card className={`relative rounded-[5px] gap-4 pt-[20px] ${className ? className : ''}`}>
         {isShowHeader && (
             <CardHeader className="border-b">
                 <CardTitle className="text-[18px] uppercase">{title}</CardTitle>
                 <CardDescription className="pb-[20px] text-[16px]">{description}</CardDescription>
             </CardHeader>
         )}
-        <CardContent className={`px-[10px] ${height ?? ''}`}>
+        <CardContent className={`px-[20px] ${height ?? ''}`}>
            {children}
         </CardContent>
         {isShowFooter && (

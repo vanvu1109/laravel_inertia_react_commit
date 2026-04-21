@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
-
+use App\Models\Permission;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\DB;
 trait HasGenerate
 {
     public function getStubs(string $filepath = ''){
@@ -87,7 +87,7 @@ trait HasGenerate
     private function generateRepository():static{
         $stub = $this->getStubs('repository');
         $target = app_path("Repositories/{$this->namespace}");
-        $destination = ("{$target}/{$this->module}Repository.php");
+        $destination = ("{$target}/{$this->module}Repo.php");
         File::ensureDirectoryExists($target);
         $extends = [
             [
@@ -123,12 +123,12 @@ trait HasGenerate
         return $this;
     }
 
-    private function generateRequest(){
+    private function generateRequest(): static{
         $stubs = [
-            'storeRequest' => resource_path('stubs/common/StoreRequest.stub'),
-            'updateRequest' => resource_path('stubs/common/UpdateRequest.stub'),
-            'bulkDestroyRequest' => resource_path('stubs/common/BulkDestroyRequest.stub'),
-            'bulkUpdateRequest' => resource_path('stubs/common/BulkUpdateRequest.stub'),
+            'StoreRequest' => resource_path('stubs/common/StoreRequest.stub'),
+            'UpdateRequest' => resource_path('stubs/common/UpdateRequest.stub'),
+            'BulkDestroyRequest' => resource_path('stubs/common/BulkDestroyRequest.stub'),
+            'BulkUpdateRequest' => resource_path('stubs/common/BulkUpdateRequest.stub'),
         ];  
 
         foreach($stubs as $stub => $path){
@@ -147,6 +147,8 @@ trait HasGenerate
             $content = $this->createContent(File::get($path), $extends);
             $this->put($content, $destination);
         }
+
+        return $this;
 
     }
 
@@ -171,10 +173,12 @@ trait HasGenerate
             [
                 '{{snake_namespace}}',
                 '{{snake_module}}',
+                '{{module_name}}',
             ],
             [
                 $snake_namespace,
                 $snake_module,
+                $this->moduleName,
             ],
         ];
 
@@ -186,5 +190,102 @@ trait HasGenerate
         }
 
         return $this;
+    }
+
+
+    private function generateMigration():static{
+        $fileName = 'common/migration';
+        $stub = $this->getStubs($fileName);
+        $timestamp = date('Y_m_d_His');
+        $migrationName = "create_{$this->table}_table";
+        $migrationFileName = "{$timestamp}_{$migrationName}.php";
+        $target = database_path("migrations/{$migrationFileName}");
+        $snake_module = Str::snake($this->module);
+        $extends = [
+            [
+                '{{snake_module}}',
+            ],
+            [
+                $snake_module,
+            ],
+        ];
+        $content = $this->createContent($stub, $extends);
+        $this->put($content, $target);
+        return $this;
+    }
+
+
+    private function generatePermissionData(){
+        try{
+            DB::beginTransaction();
+            $snake_module = Str::snake($this->module);
+            $display_name = $this->moduleName ?: $snake_module;
+
+
+            $permissions = [
+                [
+                    'name' => "Xem danh sách {$display_name}",
+                    'canonical' => "{$snake_module}:index",
+                    'publish' => 2,
+                    'description' => "Cho phép xem danh sách {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+                [
+                    'name' => "Tạo mới {$display_name}",
+                    'canonical' => "{$snake_module}:store",
+                    'publish' => 2,
+                    'description' => "Cho phép tạo mới {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+                [
+                    'name' => "Cập nhật {$display_name}",
+                    'canonical' => "{$snake_module}:update",
+                    'publish' => 2,
+                    'description' => "Cho phép cập nhật danh sách {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+                [
+                    'name' => "Xoá {$display_name}",
+                    'canonical' => "{$snake_module}:destroy",
+                    'publish' => 2,
+                    'description' => "Cho phép xoá danh sách {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+                [
+                    'name' => "Cập nhật nhiều bản ghi {$display_name}",
+                    'canonical' => "{$snake_module}:bulkUpdate",
+                    'publish' => 2,
+                    'description' => "Cho phép xoá danh sách {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+                [
+                    'name' => "Xoá nhiều bản ghi {$display_name}",
+                    'canonical' => "{$snake_module}:bulkDestroy",
+                    'publish' => 2,
+                    'description' => "Cho phép xoá nhiều danh sách {$display_name}",
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'user_id' => 1
+                ],
+            ];
+
+            foreach($permissions as $permission){
+                Permission::insertOrIgnore($permission);
+            }
+
+            DB::commit();
+        }catch(\Throwable $th){
+            DB::rollBack();
+        }
     }
 }

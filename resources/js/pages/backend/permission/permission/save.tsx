@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import  { LoaderCircle } from 'lucide-react';
-import product from '@/routes/product';
+import permission from '@/routes/permission';
 import {Textarea} from '@/components/ui/textarea';
 import { useRef } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
@@ -20,28 +20,29 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'Thêm mới  ',
-        href: '/backend/product/create',
+        title: 'Thêm mới quyển',
+        href: '/backend/permission/create',
     },
 ];
 
-const pageConfig:PageConfig<Product> = {
-    heading: 'Quản Lý ',
+const pageConfig:PageConfig<Permission> = {
+    heading: 'Quản Lý Quyền',
 }
 
-export interface Product extends IDateTime{
+export interface Permission extends IDateTime{
     id: number,
     name: string,
     publish: string,
+    canonical: string,
     description: string,
     creators: User
 }
 
-interface ProductSaveProps {
-    record?: Product;
+interface PermissionSaveProps {
+    record?: Permission;
 }
 
-export default function ProductSave({ record }:ProductSaveProps) {
+export default function PermissionSave({ record }:PermissionSaveProps) {
 
     const button = useRef('')
 
@@ -63,16 +64,15 @@ export default function ProductSave({ record }:ProductSaveProps) {
                         </div>
                         <div className='col-span-7'>
                             <Form
-                                // options={{
-                                //     preserveScroll: true,
-                                //     preserveState: false
-                                // }}
-                                key={JSON.stringify(record)}
+                                options={{
+                                    preserveScroll: true,
+                                    preserveState: false
+                                }}
                                 method="post"
                                 action={
-                                    isEdit ? product.update(record?.id).url : product.store().url
+                                    isEdit ? permission.update(record?.id).url : permission.store().url
                                 }
-                                resetOnSuccess = {['name', 'canonical', 'description']}
+                                resetOnSuccess={['name', 'canonical', 'description']}
                                 transform={(data) => (
                                     {
                                         ...data, 
@@ -88,9 +88,9 @@ export default function ProductSave({ record }:ProductSaveProps) {
                                         description="Nhập đầy đủ các thông tin dưới đây"
                                         isShowHeader={true}
                                     >
-                                        <div className='grid grid-cols-1 gap-4'>
+                                        <div className='grid grid-cols-2 gap-4'>
                                             <div className='col-span-1'>
-                                                <Label htmlFor="" className='mb-[10px]'>Tên nhóm thành viên</Label>
+                                                <Label htmlFor="" className='mb-[10px]'>Tên quyền</Label>
                                                 <Input
                                                     key={record?.updated_at}
                                                     id="name"
@@ -103,6 +103,20 @@ export default function ProductSave({ record }:ProductSaveProps) {
                                                     placeholder=""
                                                 />
                                                 <InputError message={errors.name} className='mt-[5px]'/>
+                                            </div>
+                                            <div className='col-span-1'>
+                                                <Label htmlFor="" className='mb-[10px]'>Từ khoá</Label>
+                                                <Input
+                                                    key={record?.updated_at}
+                                                    id="canonical"
+                                                    type="text"
+                                                    name="canonical"
+                                                    tabIndex={1}
+                                                    autoComplete="canonical"
+                                                    defaultValue={record?.canonical ?? ''}
+                                                    placeholder=""
+                                                />
+                                                <InputError message={errors.canonical} className='mt-[5px]' />
                                             </div>
                                         </div>
                                         <div className='mt-[20px]'>

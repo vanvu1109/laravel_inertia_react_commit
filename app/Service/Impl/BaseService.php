@@ -48,7 +48,7 @@ abstract class BaseService implements BaseServiceInterface{
                     ->commit()
                     ->getResult();
         }catch(\Throwable $th){
-            // dd($th->getMessage());
+            dd($th->getMessage());
             $this->rollback();
             return false;
         }

@@ -20,13 +20,13 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
     {
-        title: 'Thêm mới  ',
+        title: 'Thêm mới {{module_name}}',
         href: '/backend/{{snake_module}}/create',
     },
 ];
 
 const pageConfig:PageConfig<{{module}}> = {
-    heading: 'Quản Lý ',
+    heading: 'Quản Lý {{module_name}}',
 }
 
 export interface {{module}} extends IDateTime{
