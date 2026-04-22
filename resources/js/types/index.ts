@@ -28,6 +28,11 @@ export interface User extends IDateTime {
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     [key: string]: unknown;
+    publish: string,
+    description?: string,
+    creators: User,
+    address?: string,
+    birthday: string
 };
 
 export type Auth = {

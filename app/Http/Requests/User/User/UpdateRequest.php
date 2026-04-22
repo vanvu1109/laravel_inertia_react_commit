@@ -46,6 +46,4 @@ class UpdateRequest extends FormRequest
             'description' => Lang::get('message.description'),
        ];
     }
-     
-    
 }

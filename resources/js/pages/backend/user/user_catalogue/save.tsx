@@ -67,6 +67,7 @@ const getModulePermissions = (canonical: string) => {
     const moduleTtile: Record<string, string> = {
         'permission' : 'Quản lý quyền',
         'user_catalogue' : 'Quản lý quyền nhóm thành viên',
+        'user' : 'Quản lý quyền thành viên'
     }
 
     return moduleTtile[name] || name

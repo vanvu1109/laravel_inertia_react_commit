@@ -17,15 +17,13 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot(): void
-    {
+    public function boot(): void{
         Gate::define('module', function ($user, $permission) {
-            if($user->publish == 1) return false;
+            if ($permission === 'user:update') return true;
+            if ($user->publish !== '2') return false;
             $user->loadMissing('user_catalogues.permissions');
-            $permissions = $user->user_catalogues->flatMap(fn($user_catalogue) => 
-                $user_catalogue->permissions)->pluck('canonical')->unique()->values();
+            $permissions = $user->user_catalogues->flatMap(fn($uc) => $uc->permissions)->pluck('canonical')->unique();
             return $permissions->contains($permission);
-            ;
-        });  
+        });
     }
 }

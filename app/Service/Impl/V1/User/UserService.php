@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UserService extends BaseService implements UserServiceInterface{
 
     protected $repository;
-    protected $with = ['user_catalogues'];
+    protected $with = ['creators'];
 
     // protected $perpage = '';
     protected $simpleFilter = ['publish'];
