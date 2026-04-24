@@ -1,5 +1,6 @@
 import type { TBulkAction } from '@/components/custom-bulk-action';
 import type { IColumn } from '@/components/custom-table';
+import { UserCatalogue } from '@/pages/backend/user/user_catalogue/save';
 
 export type * from './auth';
 export type * from './navigation';
@@ -32,7 +33,10 @@ export interface User extends IDateTime {
     description?: string,
     creators: User,
     address?: string,
-    birthday: string
+    birthday: string,
+    user_catalogues?: UserCatalogue[],
+    password?: string,
+    passwordConfirm?: string
 };
 
 export type Auth = {
@@ -47,9 +51,10 @@ export interface ISelectOptionItem{
 export interface IFilter {
     key : string,
     placeholder : string,
-    defaultValue : string,
+    defaultValue : string | string[],
     options : ISelectOptionItem[],
-    className?: string
+    className?: string,
+    type: 'single' | 'multiple' 
 } 
 
 export interface ILinks{

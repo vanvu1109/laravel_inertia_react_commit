@@ -1,5 +1,5 @@
 import type { IFilter } from "@/types"
-import { Form } from "@inertiajs/react"
+import { Form, usePage } from "@inertiajs/react"
 import user_catalogue from "@/routes/user_catalogue"
 import {
   Select,
@@ -14,13 +14,22 @@ import { Button } from "./ui/button"
 import { Search } from "lucide-react"
 import { LoaderCircle } from "lucide-react"
 // import {usePage} from "@inertiajs/react"
-
+import {MultiSelect} from "./custom-multiple-select"
+import { useState } from "react"
 interface ICusTomFilterProps {
     filters : IFilter[] | undefined
 }
 
 const CusTomFilter = ({filters}: ICusTomFilterProps) => {
-    // const { request} = usePage().props as { request?: Record<string, string>}
+    // const { request } = usePage().props as {request?: Record<string, string>}
+    const [mutiValues, setMutiValues] = useState<Record<string, string[]>>({})
+
+    const handleMultiFiterChange = (key: string, values: string[]) =>{
+        setMutiValues((prev) => ({
+            ...prev,
+            [key]: values
+        }))
+    }
 
     return (
         <Form
@@ -30,30 +39,42 @@ const CusTomFilter = ({filters}: ICusTomFilterProps) => {
                 preserveScroll: true,
                 // preserveState: true
             }}   
+            transform={(data) => ({
+                    ...data,
+                    ...mutiValues
+            })}
         >
             {({ processing }) => (
                 <div className="flex items-center justify-between mr-[10px]">
-                    {filters && filters.map(filter => (
-                        <Select 
-                            key={filter.key}
-                            // onValueChange={}
-                            defaultValue={filter.defaultValue ?? ''}
-                            name={filter.key}
-                        >
-                            <SelectTrigger className={`mr-[10px] rounded-[5px] cursor-pointer ${filter.className ? filter.className : ''}`}>
-                                <SelectValue placeholder={filter.placeholder} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {filter.options?.map(option => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    ))}
+                    {filters && filters.map(filter => 
+                        filter.type === 'single' ? (
+                            <Select name={filter.key} key={filter.key}>
+                                <SelectTrigger className="w-[220px] rounded-[5px] cursor-pointer mr-[10px]">
+                                    <SelectValue placeholder={filter.placeholder} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {filter.options.map((option) => (
+                                            <SelectItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        ): (
+                            <MultiSelect
+                                options={filter.options ?? []}
+                                onValueChange={(values) => handleMultiFiterChange(filter.key, values)}
+                                defaultValue={mutiValues[filter.key] ?? []}
+                                variant="inverted"
+                                name={filter.key}
+                                maxWidth='400px'
+                                className='rounded-[5px] cursor-pointer mr-[10px]'
+                                placeholder="Chọn nhóm thành viên"
+                            />
+                        )
+                    )}
                     <Input 
                         type="text" 
                         placeholder="Nhập từ khoá tại đây"

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UserService extends BaseService implements UserServiceInterface{
 
     protected $repository;
-    protected $with = ['creators'];
+    protected $with = ['creators','user_catalogues'];
 
     // protected $perpage = '';
     protected $simpleFilter = ['publish'];
@@ -26,6 +26,7 @@ class UserService extends BaseService implements UserServiceInterface{
         $fillable = $this->repository->getFillable();
         $this->modelData = $this->request->only($fillable);
         $this->modelData['user_id'] = Auth::user()->id;
+        // dd($this->modelData);
         return $this;
     }
 }

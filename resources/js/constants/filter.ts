@@ -27,7 +27,8 @@
                 label : `${item} bản ghi`, 
                 value : item
             })),
-            className: 'w-[180px]'
+            className: 'w-[180px]',
+            type : 'single'
         },
         {
             key : "publish",
@@ -37,6 +38,7 @@
                 {...chooseAll('Tất cả trạng thái')},
                 ...publish
             ],
-            className: 'w-[180px]'
+            className: 'w-[180px]',
+            type : 'single'
         },
     ]

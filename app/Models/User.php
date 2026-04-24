@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\Hasquery;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 class User extends Authenticatable
 {
     use SoftDeletes, Hasquery;
@@ -15,11 +17,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',        
+        'birthday',
+        'address',
         'deleted_at',
         'publish',
+        'user_id'
     ];
 
-    protected $relationable = [];
+    protected $relationable = [
+        'user_catalogues',
+    ];
 
 
     public function getRelationable()
@@ -37,10 +44,7 @@ class User extends Authenticatable
         return $this->belongsToMany(UserCatalogue::class, 'user_catalogue_user');
     }
 
-    public $casts = [
-        'created_at' => 'datetime:d-m-Y H:i:s',
-        'updated_at' => 'datetime:d-m-Y H:i:s',
-    ];
+
 
      protected $hidden = [
         'password',
@@ -60,6 +64,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'created_at' => 'datetime:d-m-Y H:i:s',
+            'updated_at' => 'datetime:d-m-Y H:i:s',
         ];
+    }
+
+    protected function birthday():Attribute{
+        return Attribute::make(
+            get: fn($value) => $value ? date('d-m-Y', strtotime($value)) : null,
+            set: fn($value) => $value ? Carbon::parse($value)->format('Y-m-d') : null
+        );
     }
 }

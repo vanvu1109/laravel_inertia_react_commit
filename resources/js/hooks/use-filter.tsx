@@ -1,17 +1,16 @@
 import type { User } from '@/types'
 import { useMemo } from 'react'
 import { chooseAll } from '@/constants/filter'
-import type { PageConfig } from '@/types'
 import type { IFilter } from '@/types'
 interface IUserFilter{
     users: User[],
-    pageConfig: PageConfig
+    defaultFilters: IFilter[] | undefined
 }
-const useFilter = ({users, pageConfig}: IUserFilter) => {
+const useFilter = ({users, defaultFilters}: IUserFilter) => {
 
-    const filters: IFilter[] | undefined= useMemo(() => {
+    const filters: IFilter[] = useMemo(() => {
         return [
-            ...( pageConfig.filters ?? []),
+            ...( defaultFilters ?? []),
             {
                 key: 'user_id',
                 placeholder : 'Chọn người tạo',
@@ -24,10 +23,11 @@ const useFilter = ({users, pageConfig}: IUserFilter) => {
 
                 ],
                 defaultValue : '0',
-                className : 'w-[180px]'
+                className : 'w-[180px]',
+                type : 'single'
             }
         ]
-    }, [users, pageConfig.filters])
+    }, [users, defaultFilters])
 
     return {
         filters

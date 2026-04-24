@@ -24,6 +24,13 @@ class StoreRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'sometimes|string',
+            'publish' => 'sometimes|in:1,2',
+            'email' => 'sometimes|email|unique:users,email',
+            'birthday' => 'required|date',
+            'password' => 'string|min:6',
+            'password_confirm' => 'string|min:6|same:password',
+            'user_catalogues' => 'required|array|min:1',
+            'user_catalogues.*' => 'required|exists:user_catalogues,id',
         ];
     }
 

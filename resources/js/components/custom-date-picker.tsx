@@ -55,7 +55,7 @@ export default function CustomDatePicker({
             </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-            <Calendar mode="single" selected={date} onSelect={handleSelect}/>
+            <Calendar mode="single" selected={date} onSelect={handleSelect} captionLayout="dropdown"/>
         </PopoverContent>
         </Popover>
     )
