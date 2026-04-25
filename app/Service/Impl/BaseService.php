@@ -23,6 +23,7 @@ abstract class BaseService implements BaseServiceInterface{
     protected $complexFilter = ['id'];
     protected $dateFilter = ['created_at','updated_at'];
     protected $sort = ['id','desc'];
+    protected $withFilter = [];
     
     public function __construct($repository){
         $this->repository = $repository;
@@ -77,9 +78,11 @@ abstract class BaseService implements BaseServiceInterface{
     }
     
     public function paginate(Request $request){
+        // dd($request->all());
         $this->setRequest($request);
         $specifications = $this->specifications();
         $this->result = $this->repository->pagination($specifications,$this->with);
+        // dd($this->result);
         return $this->getResult();
     }
 

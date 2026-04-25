@@ -136,7 +136,7 @@ export default function UserCatalogueIndex({users, records}: IUserCatalogueIndex
         selectedIds,
         setSelectedIds
     } = useTable<UserCatalogue>({pageConfig, rerords: records.data})
-    const { filters } = useFilter({users, pageConfig})
+    const { filters } = useFilter({users, defaultFilters: pageConfig.filters})
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

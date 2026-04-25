@@ -24,7 +24,7 @@ const useFilter = ({users, defaultFilters}: IUserFilter) => {
                 ],
                 defaultValue : '0',
                 className : 'w-[180px]',
-                type : 'single'
+                type : 'single',
             }
         ]
     }, [users, defaultFilters])

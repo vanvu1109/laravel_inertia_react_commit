@@ -31,42 +31,44 @@ trait Hasquery {
         return $query;
     }
 
-    public function scopeComplexFilter($query, array $filters = []){
+    public function scopeComplexFilter($query, array $filters = [], string $relationName=''){
         if(count($filters)){
+            $table = $this->getTable();
             foreach($filters as $field => $condition) {
                 if(count($condition)) {
-                   foreach($condition as $operator => $value) {
-                      switch($operator) {
-                        case 'gt':
-                            $query->where($field, '>', $value);
-                        break;
-                        case 'gte':
-                            $query->where($field, '>=', $value);
-                        break;
-                        case 'lt':
-                            $query->where($field, '<', $value);
-                        break;
-                        case 'lte':
-                            $query->where($field, '<=', $value);
-                        break;
-                        case 'eq':
-                            $query->where($field, '=', $value);
-                        break;
-                        case 'between':
-                            $parts = explode(',', $value);
-                            if(count($parts) == 2) {
-                                [$min, $max] = $parts;
-                                $query->whereBetween($field,[$min, $max]);
-                            }
-                        break;
-                        case 'in':
-                            $in = explode(',', $value);
-                            if(isset($in) && count($in)) {
-                                $query->whereIn($field, $in);
-                            }
-                        break;
-                      }
-                    }
+                    $qualifield = !empty($relationName) ? "{$relationName}.{$field}" : $field;
+                    foreach($condition as $operator => $value) {
+                        switch($operator) {
+                            case 'gt':
+                                $query->where($qualifield, '>', $value);
+                            break;
+                            case 'gte':
+                                $query->where($qualifield, '>=', $value);
+                            break;
+                            case 'lt':
+                                $query->where($qualifield, '<', $value);
+                            break;
+                            case 'lte':
+                                $query->where($qualifield, '<=', $value);
+                            break;
+                            case 'eq':
+                                $query->where($qualifield, '=', $value);
+                            break;
+                            case 'between':
+                                $parts = explode(',', $value);
+                                if(count($parts) == 2) {
+                                    [$min, $max] = $parts;
+                                    $query->whereBetween($qualifield,[$min, $max]);
+                                }
+                            break;
+                            case 'in':
+                                $in = explode(',', $value);
+                                if(isset($in) && count($in)) {
+                                    $query->whereIn($qualifield, $in);
+                                }
+                            break;
+                        }
+                        }
                 }
             }
         }   
@@ -74,39 +76,71 @@ trait Hasquery {
     }
 
     public function scopeDateFilter($query, array $filters = []){
-          if(count($filters)){
-            foreach($filters as $field => $condition) {
-                if(count($condition)) {
-                   foreach($condition as $operator => $value) {
-                      switch($operator) {
-                        case 'gt':
-                            $query->where($field, '>', Carbon::parse($value)->startOfDay());
-                        break;
-                        case 'gte':
-                            $query->where($field, '>=', Carbon::parse($value)->startOfDay()); ;
-                        break;
-                        case 'lt':
-                            $query->where($field, '<', Carbon::parse($value)->endOfDay());;
-                        break;
-                        case 'lte':
-                            $query->where($field, '<=', Carbon::parse($value)->endOfDay());;
-                        break;
-                        case 'eq':
-                            $query->where($field, '=', Carbon::parse($value)->startOfDay());;
-                        break;
-                        case 'between':
-                            [$startDate, $endDate] = explode(',', $value);
-                            $startDate = Carbon::parse($startDate)->startOfDay();
-                            $endDate = Carbon::parse($endDate)->endOfDay();
-                            if(isset($startDate) && isset($endDate)) {
-                                $query->whereBetween($field,[$startDate, $endDate]);
-                            }
-                        break;
-                      }
+            if(count($filters)){
+                foreach($filters as $field => $condition) {
+                    if(count($condition)) {
+                    foreach($condition as $operator => $value) {
+                        switch($operator) {
+                            case 'gt':
+                                $query->where($field, '>', Carbon::parse($value)->startOfDay());
+                            break;
+                            case 'gte':
+                                $query->where($field, '>=', Carbon::parse($value)->startOfDay()); ;
+                            break;
+                            case 'lt':
+                                $query->where($field, '<', Carbon::parse($value)->endOfDay());;
+                            break;
+                            case 'lte':
+                                $query->where($field, '<=', Carbon::parse($value)->endOfDay());;
+                            break;
+                            case 'eq':
+                                $query->where($field, '=', Carbon::parse($value)->startOfDay());;
+                            break;
+                            case 'between':
+                                [$startDate, $endDate] = explode(',', $value);
+                                $startDate = Carbon::parse($startDate)->startOfDay();
+                                $endDate = Carbon::parse($endDate)->endOfDay();
+                                if(isset($startDate) && isset($endDate)) {
+                                    $query->whereBetween($field,[$startDate, $endDate]);
+                                }
+                            break;
+                        }
                     }
                 }
             }
         }   
         return $query;
+    }
+
+    protected function scopeWithFilter($query, array $filters = []){
+        if(count($filters)){
+            foreach($filters as $model => $condition) {
+                $query->whereHas($model, function($subquery) use ($condition, $model) {
+                    $this->applyRelationRecursive($subquery, $condition, $model);
+                });
+            }
+        }
+    }
+
+    protected function applyRelationRecursive($query, array $condition = [], $model){
+        $filedCondition = [];
+        $relataionConditon = [];
+        $operatorArray = array_flip(['gt', 'gte', 'eq', 'in','between', 'lt', 'lte']);
+        foreach($condition as $key => $value){
+            if(isset($value) && is_array($value) && array_intersect_key($value, $operatorArray)){
+                $filedCondition[$key] = $value; 
+            }else{
+                $relataionConditon[$key] = $value;
+            }
+        }
+        // dd($condition);
+        $this->scopeComplexFilter($query,$filedCondition,$model);
+        if(count($relataionConditon) && is_array($relataionConditon)){
+            foreach($relataionConditon as $key => $value){
+                $query->whereHas($key, function($recursiveQuery) use ($value, $key){
+                    $this->applyRelationRecursive($recursiveQuery,$value,$key);      
+                });
+            }
+        }
     }
 }

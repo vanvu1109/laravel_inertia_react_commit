@@ -151,7 +151,9 @@ export default function UserIndex({users, records, userCatalogues}: IUserIndexPr
                 ],
                 defaultValue: [] as string[],
                 className: 'w-[180px]',
-                type: 'multiple'
+                type: 'multiple',
+                operator: 'in',
+                field: 'id'
             } as IFilter       
         ]
     }, [userCatalogues, baseFilters])

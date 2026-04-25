@@ -28,12 +28,6 @@ class UpdateRequest extends FormRequest
 
         return [
             'name' => "required|string|$sometimes",
-            'canonical' => [
-                $sometimes,
-                'required',
-                'unique:users',
-                'string',
-            ],
             'description' => 'sometimes|string',
             'publish' => 'sometimes|in:1,2',
         ];
@@ -42,7 +36,6 @@ class UpdateRequest extends FormRequest
     public function attributes() {
        return [
             'name' => Lang::get('message.user_catalogue.name'),
-            'canonical' => Lang::get('message.user_catalogue.canonical'),
             'description' => Lang::get('message.description'),
        ];
     }

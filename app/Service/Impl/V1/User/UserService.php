@@ -12,10 +12,11 @@ class UserService extends BaseService implements UserServiceInterface{
 
     // protected $perpage = '';
     protected $simpleFilter = ['publish'];
-    protected $searchField = ['name', 'canonical'];
+    protected $searchField = ['name','description'];
     protected $isMultipleLanguage = true;
     protected $complexFilter = ['id'];
 
+    protected $withFilter = ['user_catalogues'];
 
     public function __construct(UserRepo $repository) {
         $this->repository = $repository;

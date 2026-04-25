@@ -15,21 +15,53 @@ import { Search } from "lucide-react"
 import { LoaderCircle } from "lucide-react"
 // import {usePage} from "@inertiajs/react"
 import {MultiSelect} from "./custom-multiple-select"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import {FormDataConvertible} from '@inertiajs/core'
+import { filter } from "@/constants/filter"
 interface ICusTomFilterProps {
     filters : IFilter[] | undefined
 }
 
 const CusTomFilter = ({filters}: ICusTomFilterProps) => {
-    // const { request } = usePage().props as {request?: Record<string, string>}
+    const { request } = usePage().props as {request?: Record<string, string>}
     const [mutiValues, setMutiValues] = useState<Record<string, string[]>>({})
 
     const handleMultiFiterChange = (key: string, values: string[]) =>{
-        setMutiValues((prev) => ({
-            ...prev,
-            [key]: values
-        }))
+        console.log(key,values);
+        setMutiValues((prev) => {
+            const updated = {...prev}
+            if(values.length === 0){
+                delete updated[key]
+            }else{
+                updated[key] = values
+            }
+            return updated
+        })
     }
+
+    useEffect(() => {
+        if (!filters || !request) return
+        const initValue: Record<string, string[]> = {}
+        filters.forEach((filter) => {
+            if (filter.type !== 'multiple') return
+            const fieldData = request[filter.key]
+            // check object dạng { in: "1,2" }
+            if (typeof fieldData === 'object' && fieldData !== null) {
+                //ví dụ request.user_catalogues = {id : { between : 1,2}}
+                const nestedFieldKey = Object.keys(fieldData)[0]
+                const nestedData = fieldData[nestedFieldKey]
+                if (typeof nestedData === 'object') {
+                    const operator = Object.keys(nestedData)[0]
+                    const rawData = nestedData[operator]
+                    // console.log(operator,nestedData);
+                    if(rawData){
+                        initValue[filter.key] = ( rawData as string ).split(',')
+                    }
+                }
+            }
+        })
+        setMutiValues(initValue)
+    }, [filters, request])
 
     return (
         <Form
@@ -39,11 +71,33 @@ const CusTomFilter = ({filters}: ICusTomFilterProps) => {
                 preserveScroll: true,
                 // preserveState: true
             }}   
-            transform={(data) => ({
-                    ...data,
-                    ...mutiValues
-            })}
-        >
+            transform={(data) => {
+                const transformed: Record<string, FormDataConvertible> = {}
+                // chỉ giữ field có giá trị
+                Object.keys(data).forEach((key) => {
+                    const value = data[key]
+                    if (value !== '' && value !== null && value !== undefined) {
+                        transformed[key] = value
+                    }
+                })
+                // xử lý multi filter
+                filters?.forEach(filter => {
+                    const key = filter.key
+                    const values = mutiValues[key] ?? []
+
+                    if(values.length){
+                        let operator = filter.operator
+                        let field = filter.field
+                        if(!operator){
+                            if(values.length === 1) operator = 'equal'
+                            else if (values.length >= 2) operator = 'in'
+                        }
+                        transformed[`${key}[${field}][${operator}]`] = values.join(',')
+                    }
+                })
+                return transformed
+            }}
+            >
             {({ processing }) => (
                 <div className="flex items-center justify-between mr-[10px]">
                     {filters && filters.map(filter => 
@@ -64,9 +118,10 @@ const CusTomFilter = ({filters}: ICusTomFilterProps) => {
                             </Select>
                         ): (
                             <MultiSelect
+                                key={filter.key}
                                 options={filter.options ?? []}
                                 onValueChange={(values) => handleMultiFiterChange(filter.key, values)}
-                                defaultValue={mutiValues[filter.key] ?? []}
+                                value={mutiValues[filter.key] ?? []}
                                 variant="inverted"
                                 name={filter.key}
                                 maxWidth='400px'

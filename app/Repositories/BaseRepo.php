@@ -40,10 +40,12 @@ class BaseRepo {
             ->complexFilter($specs['filter']['complex'] ?? [])
             ->dateFilter($specs['filter']['date'] ?? [])
             ->with($specs['with'] ?? [])
+            ->withFilter($specs['filter']['with'] ?? [])
             ->when(
             $specs['all'],
             fn($q)  => $q->get(),
             fn($q)  => $q->paginate($specs['perpage'])->withQueryString()
+            // fn($q) => $q->toSql()
         );
     }
 

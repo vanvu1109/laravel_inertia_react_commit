@@ -54,7 +54,9 @@ export interface IFilter {
     defaultValue : string | string[],
     options : ISelectOptionItem[],
     className?: string,
-    type: 'single' | 'multiple' 
+    type: 'single' | 'multiple',
+    operator?: 'equal' | 'in' | 'between' | 'gt' |'gte' | 'lt' | 'lte',
+    field?: string | undefined
 } 
 
 export interface ILinks{
