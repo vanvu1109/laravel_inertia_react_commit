@@ -12,7 +12,7 @@ import CusTomFilter from '@/components/custom-filter';
 import { filter } from '@/constants/filter';
 import CustomTable from '@/components/custom-table';
 import type { IPaginate } from '@/types';
-import type { {{module}} } from './save';
+import type { Language } from './save';
 // import { useEffect } from 'react';
 import React, { } from 'react';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -30,27 +30,29 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard(),
     },
     {
-        title: 'QL {{module_name}} ',
-        href: '/backend/{{snake_module}}',
+        title: 'QL Ngôn ngữ ',
+        href: '/backend/language',
     },
 ];
 
-const pageConfig: PageConfig<{{module}}> = {
-    heading: 'Quản Lý {{module_name}}',
-    module: '/backend/{{snake_module}}',
+const pageConfig: PageConfig<Language> = {
+    heading: 'Quản Lý Ngôn ngữ',
+    module: '/backend/language',
     cardHeading: 'Bảng Quản Lý Danh Sách ',
-    cardDescription: 'Quản lý thông tin danh sách các {{module_name}}, sử dụng các chức năng để lọc dữ liệu... ',
+    cardDescription: 'Quản lý thông tin danh sách các Ngôn ngữ, sử dụng các chức năng để lọc dữ liệu... ',
     filters: [...filter],
     columns : [
-        {key: 'checkbox', label: '', className: 'w-[60px]'},
-        {key: 'id', label: 'ID', className: 'w-[100px]'},
-        {key: 'name', label: 'Tên nhóm', className: 'w-[15%]'},
-        {key: 'description', label: 'Mô tả', className: 'w-[25%]'},
+        {key: 'checkbox', label: '', className: 'w-[50px] text-center'},
+        {key: 'id', label: 'ID', className: 'w-[60px] text-center'},
+        {key: 'image', label: 'Ảnh', className: 'w-[140px] text-center'}, 
+        {key: 'name', label: 'Tên ngôn ngữ', className: 'w-[120px] font-medium'}, 
+        {key: 'canonical', label: 'Từ khoá', className: 'w-[100px] text-center'},
+        {key: 'description', label: 'Mô tả', className: 'w-[15%]'}, 
         {key: 'creators', label: 'Người tạo', className: 'w-[15%]'},
-        {key: 'created_at', label: 'Ngày tạo', className: 'text-center'},
-        {key: 'updated_at', label: 'Ngày sửa', className: 'text-center'},
-        {key: 'publish', label: 'Trạng thái', className: 'text-center'},
-        {key: 'action', label: 'Thao tác', className: 'w-[120px] text-center'},
+        {key: 'created_at', label: 'Ngày tạo', className: 'w-[160px] text-center'}, 
+        {key: 'updated_at', label: 'Ngày sửa', className: 'w-[160px] text-center'},
+        {key: 'publish', label: 'Trạng thái', className: 'w-[100px] text-center'},
+        {key: 'action', label: 'Thao tác', className: 'w-[100px] text-center'},
     ],
     switches: ['publish'] as const
 }
@@ -64,7 +66,7 @@ const TableRowComponent = React.memo(({
     onCheckItem,
     checked
 }: {
-    item: {{module}},
+    item: Language,
     switches: SwitchState<SwitchField>,
     onSwitchChange: (id: number, field: SwitchField, curentValue: string) => () => void,
     onCheckItem: (id: number, checked: boolean) => void,
@@ -75,57 +77,62 @@ const TableRowComponent = React.memo(({
 
     return (
         <TableRow key={item.id} className={`cursor-pointer ${checked ? 'bg-[#ffc]' : ''}`}>
-        <TableCell className='font-medium'>
-            <input 
-                type="checkbox" 
-                className="cursor-pointer size-4"
-                checked={checked}
-                onChange={e => onCheckItem(item.id, e.target.checked)}
-            />
-        </TableCell>
-        <TableCell>{item.id}</TableCell>
-        <TableCell>{item.name}</TableCell>
-        <TableCell>{item.description}</TableCell>
-        <TableCell>{item.creators.name}</TableCell>
-        <TableCell>{item.created_at}</TableCell>
-        <TableCell>{item.updated_at}</TableCell>    
-        <TableCell className='text-center '>
-            <Switch 
-                className='cursor-pointer' 
-                checked={effectivePublish === '2'} 
-                onCheckedChange={onSwitchChange(item.id, 'publish', effectivePublish)}
-                disabled={loading}
-            />
-        </TableCell>
-        <TableCell className='text-center'>
-           <div className='flex items-center justify-center space-x-1'>
-                <Link href={`${pageConfig.module}/${item.id}/edit`}>
-                    <Button className='size-7 p-0 bg-[#0088ff] hover:bg-[#0088ff]/80 text-white cursor-pointer rounded-[5px]'>
-                        <Edit/>
-                    </Button>
-                </Link>
+            <TableCell className='font-medium'>
+                <input 
+                    type="checkbox" 
+                    className="cursor-pointer size-4"
+                    checked={checked}
+                    onChange={e => onCheckItem(item.id, e.target.checked)}
+                />
+            </TableCell>
+            <TableCell className='text-center'>{item.id}</TableCell>
+            <TableCell>
+                <img 
+                    src={`/storage/${item.image}`} 
+                    alt={item.name}
+                    className="w-[80px] object-cover rounded mx-auto"
+                />
+            </TableCell>
+            <TableCell className='font-medium'>{item.name}</TableCell>
+            <TableCell className='text-center'>{item.canonical}</TableCell>
+            <TableCell>{item.description}</TableCell>
+            <TableCell>{item.creators.name}</TableCell>
+            <TableCell className='text-center'>{item.created_at}</TableCell>
+            <TableCell className='text-center'>{item.updated_at}</TableCell>    
+            <TableCell className='text-center'>
+                <Switch 
+                    className='cursor-pointer' 
+                    checked={effectivePublish === '2'} 
+                    onCheckedChange={onSwitchChange(item.id, 'publish', effectivePublish)}
+                    disabled={loading}
+                />
+            </TableCell>
+            <TableCell className='text-center'>
+            <div className='flex items-center justify-center space-x-1'>
+                    <Link href={`${pageConfig.module}/${item.id}/edit`}>
+                        <Button className='size-7 p-0 bg-[#0088ff] hover:bg-[#0088ff]/80 text-white cursor-pointer rounded-[5px]'>
+                            <Edit className="size-4" />
+                        </Button>
+                    </Link>
+                <CustomConFirmDelete
+                        id={item.id}
+                        module={pageConfig.module}
+                > 
+                        <Button className='size-7 p-0 bg-[#ff0000] hover:bg-[#ff0000]/80 text-white cursor-pointer rounded-[5px]'>
+                            <Trash className="size-4" />
+                        </Button>
+                </CustomConFirmDelete>
+            </div>
+            </TableCell>
+        </TableRow>
+    )})
 
-               <CustomConFirmDelete
-                    id={item.id}
-                    module={pageConfig.module}
-               > 
-                    <Button className='size-7 p-0 bg-[#ff0000] hover:bg-[#ff0000]/80 text-white cursor-pointer rounded-[5px]'>
-                        <Trash/>
-                    </Button>
-               </CustomConFirmDelete>
-           </div>
-        </TableCell>
-    </TableRow>
-    )
-}
-)
-
-interface I{{module}}IndexProps {
+interface ILanguageIndexProps {
     users : User[],
-    records: IPaginate<{{module}}>
+    records: IPaginate<Language>
 }
 
-export default function {{module}}Index({users, records}: I{{module}}IndexProps) {
+export default function LanguageIndex({users, records}: ILanguageIndexProps) {
 
     const {
         switches, 
@@ -135,7 +142,7 @@ export default function {{module}}Index({users, records}: I{{module}}IndexProps)
         handelCheckItem,
         selectedIds,
         setSelectedIds
-    } = useTable<{{module}}>({pageConfig, rerords: records.data})
+    } = useTable<Language>({pageConfig, rerords: records.data})
     const { filters } = useFilter({users, defaultFilters: pageConfig.filters})
 
     return (
@@ -196,7 +203,7 @@ export default function {{module}}Index({users, records}: I{{module}}IndexProps)
                                 },
                                 ...pageConfig.columns?.filter(col => col.key !== 'checkbox') ?? []
                             ]}
-                            render={(item: {{module}}) => (
+                            render={(item: Language) => (
                                 <TableRowComponent 
                                     key={item.id}
                                     item={item}

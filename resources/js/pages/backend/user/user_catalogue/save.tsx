@@ -67,7 +67,8 @@ const getModulePermissions = (canonical: string) => {
     const moduleTtile: Record<string, string> = {
         'permission' : 'Quản lý quyền',
         'user_catalogue' : 'Quản lý quyền nhóm thành viên',
-        'user' : 'Quản lý quyền thành viên'
+        'user' : 'Quản lý quyền thành viên',
+        'language' : 'Quản lý ngôn ngữ ',
     }
 
     return moduleTtile[name] || name
@@ -132,12 +133,13 @@ export default function UserCatalogueSave({ record, permissions }:UserCatalogueS
         })
     }
 
-    useEffect(() => {
-        if(isEdit && permissions?.length) {
-            const currentPermissionIds = record?.permissions?.map(permission => permission.id) || []
-            setSelectedPermissionIds(currentPermissionIds)
-        }
-    }, [permissions, record?.permissions])
+   useEffect(() => {
+    if (isEdit && permissions?.length && selectedPermissionIds.length === 0) {
+        const currentPermissionIds = record?.permissions?.map(p => p.id) || []
+        setSelectedPermissionIds(currentPermissionIds)
+    }
+}, [permissions])
+console.log(selectedPermissionIds)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={pageConfig.heading} />
@@ -273,7 +275,7 @@ export default function UserCatalogueSave({ record, permissions }:UserCatalogueS
                                                                     id={`moduleKey-${moduleKey}`}
                                                                     className="cursor-pointer" 
                                                                     checked={module.permissions.every(permission => permission.id && selectedPermissionIds.includes(permission.id))}
-                                                                    onCheckedChange={(checked) => {handleModulePermissionChange(module.permissions, checked === true)}}
+                                                                    onCheckedChange={(checked) => {handleModulePermissionChange(module.permissions, !!checked)}}
                                                                 />
                                                                 <AccordionTrigger className="flex-1 p-0 hover:no-underline">
                                                                     <Label 
@@ -298,7 +300,7 @@ export default function UserCatalogueSave({ record, permissions }:UserCatalogueS
                                                                                 value={permission.id} 
                                                                                 className="cursor-pointer"
                                                                                 checked={selectedPermissionIds.includes(permission.id)}
-                                                                                onCheckedChange={(checked) => {handlePermissionChange(permission.id, checked === true)}}
+                                                                                onCheckedChange={(checked) => {handlePermissionChange(permission.id, !!checked)}}
                                                                             />
                                                                             <span className="text-sm text-gray-700">{permission.name}</span>
                                                                     </label>

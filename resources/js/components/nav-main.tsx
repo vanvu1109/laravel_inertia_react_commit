@@ -12,9 +12,10 @@
     import { useCurrentUrl } from '@/hooks/use-current-url';
     import type { NavItem } from '@/types';
     import { Collapsible, CollapsibleTrigger, CollapsibleContent } from './ui/collapsible';
+import { useState } from 'react';
     export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentUrl } = useCurrentUrl();
-
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -27,12 +28,22 @@
                         <SidebarMenuItem key={item.title}>
                             {hasChildren ? (
                                 <Collapsible
-                                    defaultOpen={item.isActive}
+                                    open={
+                                        openMenus[item.title] ??
+                                        item.items?.some(sub => isCurrentUrl(sub.url))
+                                    }
+                                    onOpenChange={(isOpen) =>
+                                        setOpenMenus(prev => ({
+                                            ...prev,
+                                            [item.title]: isOpen
+                                        }))
+                                    }
                                     className="group/collapsible"
                                 >
                                     <CollapsibleTrigger asChild >
                                         <SidebarMenuButton
                                             tooltip={{ children: item.title }}
+                                            className='cursor-pointer'
                                         >
                                             {item.icon && <item.icon />}
                                             <span>{item.title}</span>
@@ -42,7 +53,7 @@
                                     </CollapsibleTrigger>
 
                                    <CollapsibleContent>
-                                        <SidebarMenuSub> {/* 👈 THÊM CÁI NÀY */}
+                                        <SidebarMenuSub>
                                             {item.items?.map((subItem) => (
                                                 <SidebarMenuSubItem key={subItem.title}>
                                                     <SidebarMenuButton asChild>

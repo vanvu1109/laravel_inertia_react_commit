@@ -139,7 +139,7 @@ export default function PermissionIndex({users, records}: IPermissionIndexProps)
         selectedIds,
         setSelectedIds
     } = useTable<Permission>({pageConfig, rerords: records.data})
-    const { filters } = useFilter({users, pageConfig})
+    const { filters } = useFilter({users, defaultFilters: pageConfig.filters})
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

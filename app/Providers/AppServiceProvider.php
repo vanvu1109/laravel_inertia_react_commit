@@ -14,6 +14,8 @@ use App\Service\Impl\V1\User\UserService;
 use App\Service\Interfaces\User\UserServiceInterface;
 use App\Service\Interfaces\Permission\PermissionServiceInterface;
 use App\Service\Impl\V1\Permission\PermissionService;
+use App\Service\Interfaces\Setting\LanguageServiceInterface;
+use App\Service\Impl\V1\Setting\LanguageService;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserCatalogueServiceInterface::class, UserCatalogueService::class);
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(PermissionServiceInterface::class, PermissionService::class);
+        $this->app->bind(LanguageServiceInterface::class, LanguageService::class);
     }
 
     /**

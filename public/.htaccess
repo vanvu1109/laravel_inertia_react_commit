@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # 🔥 QUAN TRỌNG: bỏ qua CKFinder hoàn toàn
+    RewriteCond %{REQUEST_URI} ^/plugins/ckfinder/
+    RewriteRule ^ - [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

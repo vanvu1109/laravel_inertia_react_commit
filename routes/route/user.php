@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\V1\User\UserCatalogueController;
 use App\Http\Controllers\backend\V1\Permission\PermissionController;
+use App\Http\Controllers\backend\V1\Setting\LanguageController;
 use App\Http\Controllers\backend\V1\User\UserController;
 
 Route::prefix('backend')->middleware(['auth', 'verified'])->group(function () {
@@ -23,5 +24,11 @@ Route::prefix('backend')->middleware(['auth', 'verified'])->group(function () {
    Route::patch('/user', [UserController::class, 'bulkUpdate']);
    Route::patch('/user/{id}/toggle/{field}', [UserController::class, 'toggle']);
    Route::resource('/user', UserController::class);
+
+   Route::delete('/language', [LanguageController::class, 'bulkDestroy']);
+   Route::put('/language', [LanguageController::class, 'bulkUpdate']);
+   Route::patch('/language', [LanguageController::class, 'bulkUpdate']);
+   Route::patch('/language/{id}/toggle/{field}', [LanguageController::class, 'toggle']);
+   Route::resource('/language', LanguageController::class);
 });
 
