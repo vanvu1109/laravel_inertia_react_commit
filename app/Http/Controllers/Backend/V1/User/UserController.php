@@ -31,7 +31,7 @@ class UserController extends BaseController
     public function index(Request $request){
         $this->authorize('module', 'user:index');
         $records = $this->service->paginate($request);
-        $users = $this->userService->paginate(new Request(['type' => 'all', 'sort' => 'name,asc']));
+        $users = $this->userService->setWith([])->paginate(new Request(['type' => 'all', 'sort' => 'name,asc']));
         $userCatalogues = $this->getUserCatalogues();
         return Inertia::render('backend/user/user/index',[
             'records' => $records,
@@ -95,6 +95,6 @@ class UserController extends BaseController
     }
 
     private function getUserCatalogues(){
-        return $this->userCatalogueService->paginate(new Request(['type' => 'all', 'sort' => 'name,asc']));
+        return $this->userCatalogueService->setWith([])->paginate(new Request(['type' => 'all', 'sort' => 'name,asc']));
     }
 }

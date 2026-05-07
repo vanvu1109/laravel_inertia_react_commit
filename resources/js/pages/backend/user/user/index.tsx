@@ -45,9 +45,8 @@ const pageConfig: PageConfig<User> = {
         {key: 'checkbox', label: '', className: 'w-[60px]'},
         {key: 'id', label: 'ID', className: 'w-[100px]'},
         {key: 'name', label: 'Tên thành viên', className: 'w-[15%]'},
-        {key: 'description', label: 'Mô tả', className: 'w-[15%]'},
+        {key: 'email', label: 'Email', className: 'w-[15%]'},
         {key: 'user_catalogues', label: 'Nhóm thành viên', className: 'w-[15%]'},
-        {key: 'creators', label: 'Người tạo', className: 'w-[15%] text-center'},
         {key: 'created_at', label: 'Ngày tạo', className: 'text-center'},
         {key: 'updated_at', label: 'Ngày sửa', className: 'text-center'},
         {key: 'publish', label: 'Trạng thái', className: 'text-center'},
@@ -86,7 +85,7 @@ const TableRowComponent = React.memo(({
         </TableCell>
         <TableCell>{item.id}</TableCell>
         <TableCell>{item.name}</TableCell>
-        <TableCell>{item.description}</TableCell>
+        <TableCell>{item.email}</TableCell>
         <TableCell>
             {item.user_catalogues?.map((catalogue) => (
                 <div key={catalogue.id} className='inline-block px-2 py-1 text-xs rounded-[5px] bg-gray-200 text-gray-700 mr-1'>
@@ -94,9 +93,8 @@ const TableRowComponent = React.memo(({
                 </div>
             ))}
         </TableCell>
-        <TableCell className='text-center'>{item.creators.name}</TableCell>
-        <TableCell>{item.created_at}</TableCell>
-        <TableCell>{item.updated_at}</TableCell>    
+        <TableCell className='text-center'>{item.created_at}</TableCell>
+        <TableCell className='text-center'>{item.updated_at}</TableCell>    
         <TableCell className='text-center '>
             <Switch 
                 className='cursor-pointer' 
@@ -135,7 +133,7 @@ interface IUserIndexProps {
 }
 
 export default function UserIndex({users, records, userCatalogues}: IUserIndexProps) {
-    const { filters: baseFilters } = useFilter({users, defaultFilters: pageConfig.filters})
+    const { filters: baseFilters } = useFilter({users, defaultFilters: pageConfig.filters, isShowCreatorFilter: false})
 
     const filters = useMemo(() => {
         return [

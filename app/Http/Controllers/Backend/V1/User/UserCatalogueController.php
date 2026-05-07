@@ -35,7 +35,7 @@ class UserCatalogueController extends BaseController
     public function index(Request $request){
         $this->authorize('module', 'user_catalogue:index');
         $records = $this->service->paginate($request);
-        $users = $this->userService->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
+        $users = $this->userService->setWith([])->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
         return Inertia::render('backend/user/user_catalogue/index',[
             'records' => $records,
             'users' => $users,
@@ -69,6 +69,7 @@ class UserCatalogueController extends BaseController
     }
 
     public function update(UpdateRequest $request, $id):RedirectResponse{
+        // dd($request->all());
         $this->authorize('module','user_catalogue:update');
         $response = $this->service->save($request, $id);
         return $this->handleAction($response, $request, redirectRoute: 'user_catalogue.index', editRoute: 'user_catalogue.edit');

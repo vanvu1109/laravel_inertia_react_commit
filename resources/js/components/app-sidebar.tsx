@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, User, Settings } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutGrid, User, Settings, Notebook } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -49,6 +49,17 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'QL Ngôn Ngữ',
                 url: '/backend/language',
+            },
+        ]
+    },
+    {
+        title: 'QL Bài Viết',
+        href: '#',
+        icon: Notebook,
+        items: [
+            {
+                title: 'QL Nhóm bài viết',
+                url: '/backend/post_catalogue',
             },
         ]
     },

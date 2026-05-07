@@ -108,7 +108,7 @@ const TableRowComponent = React.memo(({
                     </Button>
                 </Link>
 
-               <CustomConFirmDelete
+               <CustomConFirmDelete 
                     id={item.id}
                     module={pageConfig.module}
                > 

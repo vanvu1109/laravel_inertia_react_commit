@@ -148,4 +148,9 @@ abstract class BaseService implements BaseServiceInterface{
         return $this;
     }
 
+    public function setWith(array $with = []): static{
+        $this->with = $with;
+        return $this;
+    }
+
 }

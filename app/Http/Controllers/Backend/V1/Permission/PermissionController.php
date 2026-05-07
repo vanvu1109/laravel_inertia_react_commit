@@ -31,7 +31,7 @@ class PermissionController extends BaseController
     public function index(Request $request){
         $this->Authorize('module', 'permission:index');
         $records = $this->service->paginate($request);
-        $users = $this->userService->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
+        $users = $this->userService->setWith([])->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
         return Inertia::render('backend/permission/permission/index',[
             'records' => $records,
             'users' => $users,

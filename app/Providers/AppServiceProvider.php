@@ -16,6 +16,8 @@ use App\Service\Interfaces\Permission\PermissionServiceInterface;
 use App\Service\Impl\V1\Permission\PermissionService;
 use App\Service\Interfaces\Setting\LanguageServiceInterface;
 use App\Service\Impl\V1\Setting\LanguageService;
+use App\Service\Interfaces\Post\PostCatalogueServiceInterface;
+use App\Service\Impl\V1\Post\PostCatalogueService;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -39,6 +41,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserServiceInterface::class, UserService::class);
         $this->app->bind(PermissionServiceInterface::class, PermissionService::class);
         $this->app->bind(LanguageServiceInterface::class, LanguageService::class);
+        $this->app->bind(PostCatalogueServiceInterface::class, PostCatalogueService::class);
     }
 
     /**

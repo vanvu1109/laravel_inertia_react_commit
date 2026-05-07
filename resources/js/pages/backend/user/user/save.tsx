@@ -17,7 +17,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import CustomDatePicker  from '@/components/custom-date-picker';
 import { useFormDataEmitter } from '@/hooks/use-form-data-emitter';
 import { MultiSelect } from '@/components/custom-multiple-select';
-import type { UserCatalogue } from '../user_catalogue/save';
+import {UserCatalogue} from '../user_catalogue/save';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',

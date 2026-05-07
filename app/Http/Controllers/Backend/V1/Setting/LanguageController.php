@@ -33,7 +33,7 @@ class LanguageController extends BaseController
     public function index(Request $request){
         $this->authorize('module', 'language:index');
         $records = $this->service->paginate($request);
-        $users = $this->userService->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
+        $users = $this->userService->setWith([])->paginate(new Request()->merge(['type' => 'all', 'sort' => 'name,asc']));
         return Inertia::render('backend/setting/language/index',[
             'records' => $records,
             'users' => $users,
@@ -62,7 +62,6 @@ class LanguageController extends BaseController
     }
 
     public function update(UpdateRequest $request, $id):RedirectResponse{
-        dd($request->all());
         $this->authorize('module', 'language:update');
         $response = $this->service->save($request, $id);
         return $this->handleAction($response, $request, redirectRoute: 'language.index', editRoute: 'language.edit');

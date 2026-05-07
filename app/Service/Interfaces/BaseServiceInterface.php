@@ -9,4 +9,5 @@ interface BaseServiceInterface {
     public function destroy(int $id);
     public function bulkDestroy(Request $request);
     public function bulkUpdate(Request $request);
+    public function setWith(array $with = []);
 }

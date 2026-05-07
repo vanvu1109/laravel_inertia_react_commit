@@ -27,7 +27,6 @@ class UserService extends BaseService implements UserServiceInterface{
         $fillable = $this->repository->getFillable();
         $this->modelData = $this->request->only($fillable);
         $this->modelData['user_id'] = Auth::user()->id;
-        // dd($this->modelData);
         return $this;
     }
 }

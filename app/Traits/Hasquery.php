@@ -111,7 +111,7 @@ trait Hasquery {
         }   
         return $query;
     }
-
+                                
     protected function scopeWithFilter($query, array $filters = []){
         if(count($filters)){
             foreach($filters as $model => $condition) {

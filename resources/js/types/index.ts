@@ -31,7 +31,7 @@ export interface User extends IDateTime {
     [key: string]: unknown;
     publish: string,
     description?: string,
-    creators: User,
+    // creators?: User,
     address?: string,
     birthday: string,
     user_catalogues?: UserCatalogue[],

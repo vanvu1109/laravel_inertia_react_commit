@@ -69,6 +69,8 @@ const getModulePermissions = (canonical: string) => {
         'user_catalogue' : 'Quản lý quyền nhóm thành viên',
         'user' : 'Quản lý quyền thành viên',
         'language' : 'Quản lý ngôn ngữ ',
+        'post' : 'Quản lý bài viet',
+        'post_catalogue': 'Quản lý nhóm bài viet',
     }
 
     return moduleTtile[name] || name
@@ -133,13 +135,12 @@ export default function UserCatalogueSave({ record, permissions }:UserCatalogueS
         })
     }
 
-   useEffect(() => {
-    if (isEdit && permissions?.length && selectedPermissionIds.length === 0) {
-        const currentPermissionIds = record?.permissions?.map(p => p.id) || []
-        setSelectedPermissionIds(currentPermissionIds)
-    }
-}, [permissions])
-console.log(selectedPermissionIds)
+    useEffect(() => {
+        if (isEdit && record?.permissions) {
+            const currentPermissionIds = record.permissions.map(p => p.id)
+            setSelectedPermissionIds(currentPermissionIds)
+        }
+    }, [record])
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={pageConfig.heading} />

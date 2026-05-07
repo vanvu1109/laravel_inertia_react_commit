@@ -36,9 +36,9 @@ const CustomCard = ({
   return (
     <Card className={`relative rounded-[5px] gap-4 pt-[20px] ${className ? className : ''}`}>
         {isShowHeader && (
-            <CardHeader className="border-b">
+            <CardHeader className={`border-b ${!description ? 'gap-0 ' : null}`}>
                 <CardTitle className="text-[18px] uppercase">{title}</CardTitle>
-                <CardDescription className="pb-[20px] text-[16px]">{description}</CardDescription>
+                <CardDescription className="pb-[20px] text-[16px]">{description ? description : ''}</CardDescription>
             </CardHeader>
         )}
         <CardContent className={`px-[20px] ${height ?? ''}`}>
