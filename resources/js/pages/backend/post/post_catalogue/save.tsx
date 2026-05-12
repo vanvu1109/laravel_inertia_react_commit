@@ -12,8 +12,10 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import  { LoaderCircle } from 'lucide-react';
 import post_catalogue from '@/routes/post_catalogue';
-import {Textarea} from '@/components/ui/textarea';
+// import {Textarea} from '@/components/ui/textarea';
 import { useRef } from 'react';
+import { Editor } from '@/components/editor';
+import Seo from '@/components/custom-seo';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -21,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Thêm mới bài viết',
-        href: '/backend/post/create',
+        href: '/backend/post_catalogue/create',
     },
 ];
 
@@ -33,6 +35,7 @@ export interface PostCatalogue extends IDateTime{
     id: number,
     name: string,
     publish: string,
+    content: string,
     description: string,
     creators: User
 }
@@ -57,100 +60,124 @@ export default function PostSave({ record }:PostSaveProps) {
                 />
 
                 <div className='page-container'>
-                    <div className='grid grid-cols-12 gap-4'>
-                        <div className='col-span-5'>
-                            <CustomNotice/>
-                        </div>
-                        <div className='col-span-7'>
-                            <Form
-                                // options={{
-                                //     preserveScroll: true,
-                                //     preserveState: false
-                                // }}
-                                key={JSON.stringify(record)}
-                                method="post"
-                                action={
-                                    isEdit ? post_catalogue.update(record?.id).url : post_catalogue.store().url
-                                }
-                                resetOnSuccess = {['name', 'canonical', 'description']}
-                                transform={(data) => (
-                                    {
-                                        ...data, 
-                                        ...(isEdit ? { _method: 'put' } : {}),
-                                        save_and_redirect: button.current
-                                    })}
-                            >
-                            {({ processing, errors }) => (
-                                <>
-                                    <CustomCard
-                                        loading={false}
-                                        title="Thông tin chung"
-                                        description="Nhập đầy đủ các thông tin dưới đây"
-                                        isShowHeader={true}
-                                    >
-                                        <div className='grid grid-cols-1 gap-4'>
-                                            <div className='col-span-1'>
-                                                <Label htmlFor="" className='mb-[10px]'>Tên nhóm thành viên</Label>
-                                                <Input
-                                                    key={record?.updated_at}
-                                                    id="name"
-                                                    type="text"
-                                                    name="name"
-                                                    autoFocus
-                                                    tabIndex={1}
-                                                    autoComplete="name"
-                                                    defaultValue={record?.name ?? ''}
-                                                    placeholder=""
-                                                />
-                                                <InputError message={errors.name} className='mt-[5px]'/>
+                   <Form
+                        // options={{
+                        //     preserveScroll: true,
+                        //     preserveState: false
+                        // }}
+                        key={JSON.stringify(record)}
+                        method="post"
+                        action={
+                            isEdit ? post_catalogue.update(record?.id).url : post_catalogue.store().url
+                        }
+                        resetOnSuccess = {['name', 'canonical', 'description']}
+                        transform={(data) => (
+                            {
+                                ...data, 
+                                ...(isEdit ? { _method: 'put' } : {}),
+                                save_and_redirect: button.current
+                            })}
+                    >
+                    {({ processing, errors }) => (
+                        <>
+                            <div className=' mr-auto ml-auto '>
+                                <div className='grid grid-cols-12 gap-4'>
+                                    <div className='col-span-9'>
+                                         <CustomCard
+                                            loading={false}
+                                            title="Thông tin chung"
+                                            description="Nhập đầy đủ các thông tin dưới đây"
+                                            isShowHeader={true}
+                                        >
+                                            <div className='grid grid-cols-1 gap-4'>
+                                                <div className='col-span-1'>
+                                                    <Label htmlFor="" className='mb-[10px]'>Tiêu đề</Label>
+                                                    <Input
+                                                        key={record?.updated_at}
+                                                        id="name"
+                                                        type="text"
+                                                        name="name"
+                                                        autoFocus
+                                                        tabIndex={1}
+                                                        autoComplete="name"
+                                                        defaultValue={record?.name ?? ''}
+                                                        placeholder=""
+                                                    />
+                                                    <InputError message={errors.name} className='mt-[5px]'/>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className='mt-[20px]'>
-                                            <Label htmlFor="description" className='mb-[10px]'>Mô tả ngắn</Label>
-                                            <Textarea
-                                                name="description"
-                                                id="description"
-                                                className= 'h-[168px]'
-                                                tabIndex={1}
-                                                defaultValue={record?.description}
-                                                placeholder="Nhập mô tả ngắn"   
-                                            />
-                                        </div>
-                                        <div className='mt-[10px]'>
-                                            <div className="flex space-x-2">
-                                                <Button
-                                                type="submit"
-                                                className="mt-4 w-[150px] cursor-pointer"
-                                                tabIndex={4}
-                                                disabled={processing}
-                                                onClick={() => button.current = ''}
-                                                >
-                                                    {processing && (
-                                                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/>
-                                                    )}
-                                                    Lưu Lại
-                                                </Button>
-                                                <Button
-                                                type="submit"
-                                                className="mt-4 w-[150px] cursor-pointer bg-blue-500"
-                                                tabIndex={4}
-                                                disabled={processing}
-                                                onClick={() => button.current = 'save_and_redirect'}
-                                                
-                                                >
-                                                    {processing && (
-                                                        <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/>
-                                                    )}
-                                                    Lưu Lại và đóng
-                                                </Button>
+                                            <div className='mt-[20px]'>
+                                                <Label htmlFor="content" className='mb-[10px]'>Nội dung</Label>
+                                                <Editor height="h-[300px]" name='content' value={record?.content ?? ""}/>
                                             </div>
-                                       </div>
-                                    </CustomCard>
-                                </>
-                            )}
-                            </Form>
-                        </div>
-                    </div>
+                                            <div className='mt-[20px]'>
+                                                <Label htmlFor="description" className='mb-[10px]'>Mô tả</Label>
+                                                <Editor height="h-[300px]" name='description' value={record?.description ?? ""}/>
+                                            </div>                                
+                                            <div className='mt-[10px]'>
+                                                <div className="flex space-x-2">
+                                                    <Button
+                                                    type="submit"
+                                                    className="mt-4 w-[150px] cursor-pointer"
+                                                    tabIndex={4}
+                                                    disabled={processing}
+                                                    onClick={() => button.current = ''}
+                                                    >
+                                                        {processing && (
+                                                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/>
+                                                        )}
+                                                        Lưu Lại
+                                                    </Button>
+                                                    <Button
+                                                    type="submit"
+                                                    className="mt-4 w-[150px] cursor-pointer bg-blue-500"
+                                                    tabIndex={4}
+                                                    disabled={processing}
+                                                    onClick={() => button.current = 'save_and_redirect'}
+                                                    
+                                                    >
+                                                        {processing && (
+                                                            <LoaderCircle className="mr-2 h-4 w-4 animate-spin"/>
+                                                        )}
+                                                        Lưu Lại và đóng
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </CustomCard>
+                                        <Seo/>
+                                    </div>
+                                    <div className='col-span-3'>
+                                        <CustomCard
+                                            loading={false}
+                                            title="Danh mục cha"
+                                            description="Nhập đầy đủ các thông tin"
+                                            isShowHeader={true}
+                                        >
+                                            <div className='grid grid-cols-1 gap-4'>
+                                                {/* <div className='col-span-1'>
+                                                    <Label htmlFor="" className='mb-[10px]'>Tên nhóm thành viên</Label>
+                                                    <Input
+                                                        key={record?.updated_at}
+                                                        id="name"
+                                                        type="text"
+                                                        name="name"
+                                                        autoFocus
+                                                        tabIndex={1}
+                                                        autoComplete="name"
+                                                        defaultValue={record?.name ?? ''}
+                                                        placeholder=""
+                                                    />
+                                                    <InputError message={errors.name} className='mt-[5px]'/>
+                                                </div> */}
+                                            </div>
+                                           
+                                        </CustomCard>
+                                    </div>
+                                </div>
+                            </div>                           
+                        </>
+                    )}
+                    </Form>
                 </div>
             </div>
         </AppLayout>

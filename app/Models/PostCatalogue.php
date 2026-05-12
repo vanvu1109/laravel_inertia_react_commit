@@ -11,6 +11,16 @@ class PostCatalogue extends Model {
 
     protected $fillable = [
         'name',
+        'user_id',
+        'parent_id',
+        'lft',
+        'rgt',
+        'level',
+        'order',
+        'image',
+        'album',
+        'type',
+        'sctipt',
         'deleted_at',
         'publish',
     ];
@@ -25,7 +35,7 @@ class PostCatalogue extends Model {
         return $this->relationable;
     }
 
-        public function creators(): BelongsTo {
+    public function creators(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
