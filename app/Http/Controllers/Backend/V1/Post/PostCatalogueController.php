@@ -56,7 +56,6 @@ class PostCatalogueController extends BaseController
 
 
     public function store(StoreRequest $request):RedirectResponse{
-        dd($request->all());
         $this->authorize('module', 'post_catalogue:store');
         $response = $this->service->save($request);
         return $this->handleAction($response, $request, redirectRoute: 'post_catalogue.index');

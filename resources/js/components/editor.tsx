@@ -13,7 +13,7 @@ import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 import { RichTextExtension } from "@lexical/rich-text";
 import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { type EditorState, type SerializedEditorState, configExtension, defineExtension } from "lexical";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // import { useBlockViewer } from "@/components/block-viewer-provider";
 import { ContentEditable } from "@/components/content-editable";
@@ -124,13 +124,18 @@ export function Editor({
       setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
+  const [ready, setReady] = useState(false)
 
+useEffect(() => {
+  setReady(true)
+}, [])
+  
   const AppExtension = useMemo(() =>
       defineExtension({
         dependencies: [
           RichTextExtension,
           AutoFocusExtension,
-          SelectionAlwaysOnDisplayExtension,
+          // SelectionAlwaysOnDisplayExtension,
           HistoryExtension,
           configExtension(LinkExtension, {
             validateUrl,
@@ -158,7 +163,7 @@ export function Editor({
           DateTimeExtension,
         ],
         name: "@shadcn-editor",
-        namespace: "Playground",
+        namespace: name,
         nodes: [
           OverflowNode,
           EmojiNode,
@@ -192,7 +197,7 @@ export function Editor({
         },
         theme: editorTheme,
       }),
-    [editorState, editorSerializedState],
+    [editorState, editorSerializedState, name],
   );
 
   return (
@@ -264,10 +269,20 @@ export function Editor({
               <LayoutPlugin />
               <TwitterPlugin />
               <YouTubePlugin />
-              <DraggableBlockPlugin anchorElem={floatingAnchorElem} baseOptions={[]} />
-              <FloatingTextFormatToolbarPlugin anchorElem={floatingAnchorElem} setIsLinkEditMode={setIsLinkEditMode} />
-              <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} isLinkEditMode={isLinkEditMode} setIsLinkEditMode={setIsLinkEditMode} />
-              <CodeActionMenuPlugin anchorElem={floatingAnchorElem} />
+              {/* <DraggableBlockPlugin anchorElem={floatingAnchorElem} baseOptions={[]} /> */}
+              {ready && floatingAnchorElem && (
+                <>
+                  <FloatingTextFormatToolbarPlugin
+                    anchorElem={floatingAnchorElem}
+                    setIsLinkEditMode={setIsLinkEditMode}
+                  />
+                  <FloatingLinkEditorPlugin
+                    anchorElem={floatingAnchorElem}
+                    isLinkEditMode={isLinkEditMode}
+                    setIsLinkEditMode={setIsLinkEditMode}
+                  />
+                </>
+              )}
             </div>
             {/* <ActionsPlugin>
               <div className="clear-both flex items-center justify-between gap-2 overflow-auto border-t p-1">

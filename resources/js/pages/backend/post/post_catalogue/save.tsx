@@ -4,18 +4,23 @@ import { dashboard } from '@/routes';
 import type { BreadcrumbItem, IDateTime, PageConfig, User } from '@/types';
 import  CusTomPageHeading from '@/components/custom-page-heading';
 import CustomCard from '@/components/custom-card';
-import CustomNotice from '@/components/custom-notice';
+// import CustomNotice from '@/components/custom-notice';
 import { Form } from '@inertiajs/react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import  { LoaderCircle } from 'lucide-react';
+// import { Input } from '@/components/ui/input';
+// import { Label } from '@/components/ui/label';
+// import InputError from '@/components/input-error';
+// import { Button } from '@/components/ui/button';
+// import  { LoaderCircle } from 'lucide-react';
 import post_catalogue from '@/routes/post_catalogue';
 // import {Textarea} from '@/components/ui/textarea';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Editor } from '@/components/editor';
 import Seo from '@/components/custom-seo';
+import CustomGeneral from '@/components/custom-general';
+import { Button } from '@/components/ui/button';
+import { LoaderCircle } from 'lucide-react';
+import { FormProvider } from '@/context/FormContext';
+import CustomAlbum  from '@/components/custom-album';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -37,6 +42,8 @@ export interface PostCatalogue extends IDateTime{
     publish: string,
     content: string,
     description: string,
+    canonical: string,
+    album: string[],
     creators: User
 }
 
@@ -60,60 +67,43 @@ export default function PostSave({ record }:PostSaveProps) {
                 />
 
                 <div className='page-container'>
-                   <Form
-                        // options={{
-                        //     preserveScroll: true,
-                        //     preserveState: false
-                        // }}
-                        key={JSON.stringify(record)}
-                        method="post"
-                        action={
-                            isEdit ? post_catalogue.update(record?.id).url : post_catalogue.store().url
-                        }
-                        resetOnSuccess = {['name', 'canonical', 'description']}
-                        transform={(data) => (
-                            {
-                                ...data, 
-                                ...(isEdit ? { _method: 'put' } : {}),
-                                save_and_redirect: button.current
-                            })}
-                    >
-                    {({ processing, errors }) => (
-                        <>
-                            <div className=' mr-auto ml-auto '>
-                                <div className='grid grid-cols-12 gap-4'>
-                                    <div className='col-span-9'>
-                                         <CustomCard
-                                            loading={false}
-                                            title="Thông tin chung"
-                                            description="Nhập đầy đủ các thông tin dưới đây"
-                                            isShowHeader={true}
-                                        >
-                                            <div className='grid grid-cols-1 gap-4'>
-                                                <div className='col-span-1'>
-                                                    <Label htmlFor="" className='mb-[10px]'>Tiêu đề</Label>
-                                                    <Input
-                                                        key={record?.updated_at}
-                                                        id="name"
-                                                        type="text"
-                                                        name="name"
-                                                        autoFocus
-                                                        tabIndex={1}
-                                                        autoComplete="name"
-                                                        defaultValue={record?.name ?? ''}
-                                                        placeholder=""
-                                                    />
-                                                    <InputError message={errors.name} className='mt-[5px]'/>
-                                                </div>
-                                            </div>
-                                            <div className='mt-[20px]'>
-                                                <Label htmlFor="content" className='mb-[10px]'>Nội dung</Label>
-                                                <Editor height="h-[300px]" name='content' value={record?.content ?? ""}/>
-                                            </div>
-                                            <div className='mt-[20px]'>
-                                                <Label htmlFor="description" className='mb-[10px]'>Mô tả</Label>
-                                                <Editor height="h-[300px]" name='description' value={record?.description ?? ""}/>
-                                            </div>                                
+                   <FormProvider> 
+                        <Form
+                            // options={{
+                            //     preserveScroll: true,
+                            //     preserveState: false 
+                            // }}
+                            key={JSON.stringify(record)}
+                            method="post"
+                            action={
+                                isEdit ? post_catalogue.update(record?.id).url : post_catalogue.store().url
+                            }
+                            resetOnSuccess = {['name', 'canonical', 'description']}
+                            transform={(data) => (
+                                {
+                                    ...data, 
+                                    ...(isEdit ? { _method: 'put' } : {}),
+                                    save_and_redirect: button.current
+                                })}
+                        >
+                        {({ processing, errors }) => (
+                            <>
+                                <div className=' mr-auto ml-auto '>
+                                    <div className='grid grid-cols-12 gap-4'>
+                                        <div className='col-span-9'>
+                                            <CustomGeneral
+                                                name={record?.name}
+                                                isShowContent
+                                                isShowDescription
+                                                content={record?.content}
+                                                errors={errors}
+                                                className='mb-[20px]'
+                                            />
+                                            <CustomAlbum/>
+                                            <Seo 
+                                                record={record}
+                                                errors={errors}
+                                            />
                                             <div className='mt-[10px]'>
                                                 <div className="flex space-x-2">
                                                     <Button
@@ -142,42 +132,25 @@ export default function PostSave({ record }:PostSaveProps) {
                                                         Lưu Lại và đóng
                                                     </Button>
                                                 </div>
-                                            </div>
-                                        </CustomCard>
-                                        <Seo/>
+                                            </div>  
+                                        </div>
+                                        <div className='col-span-3'>
+                                            <CustomCard
+                                                loading={false}
+                                                title="Danh mục cha"
+                                                description="Nhập đầy đủ các thông tin"
+                                                isShowHeader={true}
+                                            >
+                                                123
+                                            </CustomCard>
+                                        </div>
                                     </div>
-                                    <div className='col-span-3'>
-                                        <CustomCard
-                                            loading={false}
-                                            title="Danh mục cha"
-                                            description="Nhập đầy đủ các thông tin"
-                                            isShowHeader={true}
-                                        >
-                                            <div className='grid grid-cols-1 gap-4'>
-                                                {/* <div className='col-span-1'>
-                                                    <Label htmlFor="" className='mb-[10px]'>Tên nhóm thành viên</Label>
-                                                    <Input
-                                                        key={record?.updated_at}
-                                                        id="name"
-                                                        type="text"
-                                                        name="name"
-                                                        autoFocus
-                                                        tabIndex={1}
-                                                        autoComplete="name"
-                                                        defaultValue={record?.name ?? ''}
-                                                        placeholder=""
-                                                    />
-                                                    <InputError message={errors.name} className='mt-[5px]'/>
-                                                </div> */}
-                                            </div>
-                                           
-                                        </CustomCard>
-                                    </div>
-                                </div>
-                            </div>                           
-                        </>
-                    )}
-                    </Form>
+                                </div>                 
+                                
+                            </>
+                        )}
+                        </Form>
+                   </FormProvider> 
                 </div>
             </div>
         </AppLayout>

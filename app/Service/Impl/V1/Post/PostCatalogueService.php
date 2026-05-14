@@ -23,8 +23,19 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     }
 
     protected function prepareModelData() : static{
+        dd($this->request->all());
+        // dd($this->request->file('images'));
         $fillable = $this->repository->getFillable();
         $this->modelData = $this->request->only($fillable);
+        if ($this->request->hasFile('images')) {
+            $paths = [];
+            foreach ($this->request->file('images') as $file) {
+                $paths[] = $file->store('post_catalogues', 'public');
+            }
+
+            $this->modelData['album'] = json_encode($paths);
+        }
+        
         $this->modelData['user_id'] = Auth::user()->id;
         return $this;
     }

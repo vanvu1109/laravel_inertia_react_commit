@@ -39,6 +39,21 @@ export interface User extends IDateTime {
     passwordConfirm?: string
 };
 
+export interface SharedData {
+    name: string;
+    quote: { message: string; author: string };
+    auth: Auth;
+    sidebarOpen: boolean;
+    [key: string]: unknown;
+    flash?: { 
+        success?: string; 
+        error?: string; 
+        warning?: string; 
+        info?: string; 
+    };
+    app: { url : string}
+}
+
 export type Auth = {
     user: User;
 };

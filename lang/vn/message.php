@@ -1,7 +1,7 @@
 <?php
 return [
     'validation' => [
-        'name' => 'Tên nhóm thành viên',
+        'name' => 'Tiêu đề',
         'canonical' => 'Từ khoá',
         'publish' => 'Trạng thái',
     ],

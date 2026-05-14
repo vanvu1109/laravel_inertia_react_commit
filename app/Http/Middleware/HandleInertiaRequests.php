@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use Inertia\Middleware;
+use Soap\Url;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -48,6 +49,9 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
                 'warning' => $request->session()->get('warning'),
                 'info' => $request->session()->get('info'),
+            ],
+            'app'=> [
+                'url' => config('app.url')
             ]
         ];
     }

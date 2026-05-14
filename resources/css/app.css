@@ -164,3 +164,16 @@ body[data-scroll-locked] {
 .page-container{
     padding: 20px;
 }
+
+.base-url {
+   position: absolute;
+   height: 36px;
+   line-height: 34px;
+   display: inline-block;
+   padding: 0 10px;
+   left: 0;
+   top: 0;
+   font-size: 12px;
+   border: 1px solid #c4cdd5;
+   background: linear-gradient(to bottom, #fff, #f9fafb);
+}

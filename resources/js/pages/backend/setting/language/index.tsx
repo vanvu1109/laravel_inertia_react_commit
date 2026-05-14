@@ -88,7 +88,7 @@ const TableRowComponent = React.memo(({
             <TableCell className='text-center'>{item.id}</TableCell>
             <TableCell>
                 <img 
-                    src={`/storage/${item.image}`} 
+                    src={item.image}
                     alt={item.name}
                     className="w-[80px] object-cover rounded mx-auto"
                 />

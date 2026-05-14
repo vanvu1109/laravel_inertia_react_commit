@@ -3,7 +3,6 @@ namespace App\Http\Requests\Setting\Language;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Str;
 class StoreRequest extends FormRequest
 {
     /**
@@ -25,7 +24,7 @@ class StoreRequest extends FormRequest
             'name' => 'required|string',
             'canonical' => 'required|string|unique:languages',
             'description' => 'sometimes|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|string',
             'publidsh'=> 'sometimes|in:1,2',
         ];
     }

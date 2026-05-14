@@ -37,6 +37,7 @@ abstract class BaseService implements BaseServiceInterface{
     protected abstract function prepareModelData();
 
     public function save(Request $request, ?int $id = null){
+        // dd($request->all());
         try{
             return 
                 $this->beginTransaction()

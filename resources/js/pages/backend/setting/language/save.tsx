@@ -15,6 +15,7 @@ import language from '@/routes/language';
 import {Textarea} from '@/components/ui/textarea';
 import { useRef } from 'react';
 import ImageUpload from '@/components/image-upload';
+import CkfinderInput from '@/components/ck-finder-input';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -127,7 +128,8 @@ export default function LanguageSave({ record }:LanguageSaveProps) {
                                         </div>
                                         <div className='mt-[20px]'>
                                             <Label htmlFor="description" className='mb-[10px]'>Chọn ảnh</Label>
-                                            <ImageUpload name="image" value={record?.image}/>
+                                            <CkfinderInput name='image' value={record?.image}/>
+                                            {/* <ImageUpload name="image" value={record?.image}/> */}
                                         </div>
                                       
                                         <div className='mt-[20px]'>

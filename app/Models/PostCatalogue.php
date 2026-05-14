@@ -10,7 +10,7 @@ class PostCatalogue extends Model {
     use SoftDeletes, Hasquery;
 
     protected $fillable = [
-        'name',
+        'name', 
         'user_id',
         'parent_id',
         'lft',
@@ -42,6 +42,7 @@ class PostCatalogue extends Model {
     public $casts = [
         'created_at' => 'datetime:d-m-Y H:i:s',
         'updated_at' => 'datetime:d-m-Y H:i:s',
+        'album' => 'array',
     ];
 }   
 
